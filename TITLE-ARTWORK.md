@@ -1,0 +1,9 @@
+# Title screen artwork
+
+Created with the built-in image_gen tool; no external API key was used.
+
+Runtime file: title.webp (1024 × 1536). The generated PNG was converted to lossless WebP and decoded pixels were verified identical. Korean title and menu buttons are real responsive UI rendered with the bundled Galmuri11 pixel font.
+
+Final prompt:
+
+Use case: stylized-concept. Production pixel-art title-screen background for a Korean mobile pawnshop negotiation game named Midnight Pawn. Generate a brand-new finished raster illustration, portrait 2:3 orientation, high-quality handcrafted 16-bit pixel clusters, crisp deliberate square pixels, rich but limited plum, midnight navy, dark walnut, antique gold and muted teal palette. Scene: rainy midnight back alley, intimate mysterious antique pawnshop exterior with warmly lit wooden door and teal stained-glass windows, shelves and curious clocks visible through the windows, bronze keys, tiny distant cat silhouette near doorway, dripping awning, cobblestone reflections, a crescent moon and chimney silhouettes. Composition intended for a mobile title menu: upper quarter is mostly dark purple night sky, middle has the beautifully detailed shop doorway centered, lower third has a quiet dark cobblestone foreground with little visual noise so three real UI menu buttons can be overlaid legibly. Make it atmospheric, inviting, mysterious and premium indie-game quality, matching a detailed pixel-art interior with brass lamps and old curios. Strong pixel-art material lighting, no blur, no anti-aliased vector look, no smooth painted gradients. The image must be background artwork only: NO text, NO letters, NO logos, NO baked-in UI, NO buttons, NO border. Do not include text on the shop sign; use a small abstract hourglass emblem instead. Full bleed, no white margins.

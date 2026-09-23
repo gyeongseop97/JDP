@@ -1,0 +1,124 @@
+:root { --tutorial-offset: 0px; }
+body.title-screen { min-height: 100svh; padding: 0; background: #14101c; }
+body.title-screen > .app { display: none; }
+.pawn-title[hidden], .tutorial-coach[hidden] { display: none !important; }
+.pawn-title { position: relative; isolation: isolate; display: grid; place-items: center; width: 100%; min-height: 100svh; padding: max(38px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom)); overflow: hidden; background-color: #19141d; background-image: url('title.webp'); background-position: center; background-size: cover; image-rendering: pixelated; }
+.pawn-title::after { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; opacity: .13; background: repeating-linear-gradient(0deg, #000 0, #000 1px, transparent 1px, transparent 4px); }
+.title-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, rgba(16,11,22,.55), rgba(16,11,22,.13) 48%, rgba(16,11,22,.55)), linear-gradient(0deg, #151019 0%, rgba(21,16,25,.88) 23%, rgba(21,16,25,.29) 65%, rgba(21,16,25,.43)); }
+.title-content { width: min(100%, 490px); padding: 22px 0 0; text-align: center; color: #f7e7c8; }
+.title-kicker { color: #d0ac77; font-size: 11px; letter-spacing: .22em; font-weight: 700; }
+.pawn-title h1 { margin: 20px 0 8px; color: #ffe4a8; font-size: clamp(56px, 11vw, 92px); line-height: 1.05; font-weight: 950; letter-spacing: -.075em; text-shadow: 0 4px 0 #765036, 4px 4px 0 #211724, 0 8px 25px #170d21; }
+.pawn-title h1 span { font-size: .75em; letter-spacing: -.07em; }
+.title-english { margin: 14px 0 0; color: #dfbd86; font: 700 13px/1.5 ui-monospace, monospace; letter-spacing: .29em; text-shadow: 0 2px #231b27; }
+.title-english span { margin-left: 5px; color: #9c8a8f; font-size: 10px; letter-spacing: 0; }
+.title-story { margin: 22px 0; color: #daccc0; font-size: 14px; line-height: 1.8; text-shadow: 0 2px 8px #110e16; }
+.title-story em { display: block; margin-top: 7px; color: #f0d4a1; font-size: 12px; font-style: normal; }
+.title-buttons { display: grid; gap: 11px; max-width: 320px; margin: 27px auto 0; }
+.pixel-menu-button { position: relative; width: 100%; min-height: 55px; display: flex; justify-content: center; align-items: center; gap: 12px; padding: 13px 20px; border: 2px solid #8d745e; border-radius: 0; outline-offset: 5px; background: #29212e; box-shadow: 3px 0 0 #17131c, -3px 0 0 #17131c, 0 3px 0 #17131c, 0 -3px 0 #17131c, inset 0 2px #463844, inset 0 -3px #1b1721; color: #eddec3; font: 800 16px/1.4 inherit; cursor: pointer; transition: transform .12s, background .12s; }
+.pixel-menu-button:hover { background: #3d3042; }
+.pixel-menu-button:active { transform: translateY(2px); }
+.pixel-menu-button:focus-visible { outline: 2px solid #fff0ba; }
+.pixel-menu-button:disabled { opacity: .42; cursor: default; }
+.pixel-menu-button span { color: #c39c68; font-size: 15px; }
+.pixel-menu-button.new-game { background: #d8ac6b; border-color: #f7d496; color: #33232c; box-shadow: 3px 0 0 #241a26, -3px 0 0 #241a26, 0 3px 0 #241a26, 0 -3px 0 #241a26, inset 0 2px #ffe7af, inset 0 -4px #a67748; }
+.pixel-menu-button.new-game span { color: #694230; }
+.pixel-menu-button.new-game:hover { background: #edc081; }
+.tutorial-menu-button { flex-wrap: wrap; gap: 0 12px; padding: 11px 16px; border-color: #80728b; }
+.tutorial-menu-button small { flex-basis: 100%; font-size: 10px; font-weight: 400; color: #bcb0c7; padding-top: 3px; }
+.title-save-status { margin: 18px 0 0; color: #aea0a6; font-size: 11px; }
+.title-details { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 28px; color: #af9390; font-size: 10px; }
+.title-details i { font-style: normal; color: #655360; }
+.title-footer { color: #847480; font-size: 10px; margin: 11px 0 0; }
+.title-lantern { position: absolute; right: max(10%, 26px); top: 11%; color: #edc570; font-size: 42px; text-shadow: 0 0 35px #f7bd50; opacity: .75; animation: title-glimmer 4s steps(4) infinite; }
+@keyframes title-glimmer { 50% { opacity: .4; } }
+
+.onboarding-dialog { width: min(460px, calc(100vw - 32px)); max-height: calc(100svh - 48px); overflow: auto; margin: auto; padding: 30px 26px; border: 2px solid #8a6d52; border-radius: 3px; background: #221c29; color: #eadfcf; box-shadow: 0 0 0 5px #15121b, 0 24px 80px #000a; text-align: center; }
+.onboarding-dialog::backdrop { background: #0e0b16de; backdrop-filter: blur(3px); }
+.onboarding-dialog h2 { margin: 8px 0 14px; color: #edc791; font-size: 23px; }
+.onboarding-dialog p { font-size: 13px; line-height: 1.8; color: #bfb1bc; }
+.onboarding-dialog-mark { color: #d2aa70; font-size: 32px; }
+.onboarding-dialog-actions { display: grid; gap: 14px; margin-top: 25px; }
+.onboarding-safe-note { background: #17151f; border-left: 2px solid #7c947d; padding: 10px 12px; text-align: left; }
+.tutorial-chapters { display: grid; gap: 8px; margin: 18px 0 24px; }
+.tutorial-chapters button { min-height: 45px; padding: 10px 13px; display: flex; gap: 13px; align-items: center; border: 1px solid #534557; border-radius: 3px; background: #302635; color: #e0d3c8; font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.tutorial-chapters button span { color: #cda56f; font: 12px ui-monospace, monospace; }
+
+body.tutorial-running { scroll-padding-top: var(--tutorial-offset); }
+body.tutorial-running .app { padding-top: 0; }
+.tutorial-coach { position: sticky; top: 0; z-index: 72; width: min(1160px, calc(100% - 40px)); margin: 0 auto 14px; padding: max(9px, env(safe-area-inset-top)) 15px 10px; border: 1px solid #796446; border-top: 0; border-radius: 0 0 7px 7px; background: rgba(36, 29, 40, .98); color: #eddec8; box-shadow: 0 5px 20px #08070b70; }
+.tutorial-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.practice-tag { color: #bdcfb3; font-size: 10px; white-space: nowrap; }
+.tutorial-topline > div { display: flex; align-items: center; gap: 4px; }
+.tutorial-topline button { min-height: 34px; padding: 5px 9px; border: 1px solid #5a4c60; border-radius: 4px; background: #312838; color: #c5b7c9; font: inherit; font-size: 10px; cursor: pointer; }
+.tutorial-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-top: 4px; }
+#tutorial-counter { font: 10px/1.5 ui-monospace, monospace; color: #bea274; }
+#tutorial-heading { margin: 0; font-size: 17px; line-height: 1.5; color: #f0d3a5; }
+#tutorial-copy { margin: 6px 0; max-width: 950px; color: #c5b8c8; font-size: 12px; line-height: 1.7; }
+#tutorial-goals { margin: 6px 0 7px; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 18px; max-height: 76px; overflow-y: auto; font-size: 11px; }
+#tutorial-goals li { display: flex; align-items: baseline; gap: 7px; color: #e1c6a0; line-height: 1.6; }
+#tutorial-goals li span { color: #caaa6b; }
+#tutorial-goals li.done { color: #99b397; }
+#tutorial-goals li.done span { color: #a4d0a2; }
+.tutorial-controls { display: flex; gap: 7px; justify-content: flex-end; }
+.tutorial-controls button, #tutorial-reading-links button { min-height: 36px; padding: 7px 12px; border: 1px solid #5b4a58; border-radius: 4px; background: #302735; color: #c1b2bf; font: inherit; font-size: 11px; cursor: pointer; }
+.tutorial-controls .tutorial-next { min-width: 132px; background: #d3a568; border-color: #e7c58c; color: #32242a; font-weight: 800; }
+.tutorial-controls .tutorial-next:disabled { background: #373039; border-color: #574c5b; color: #958b9b; cursor: default; }
+.tutorial-success { margin: 7px 0 10px; padding: 8px 11px; border-left: 2px solid #a7c08c; background: #222e26; color: #bdd1ad; font-size: 12px; line-height: 1.65; }
+#tutorial-reading-links { display: flex; gap: 7px; padding: 4px 0; }
+#tutorial-reading-links[hidden] { display: none; }
+.tutorial-coach.collapsed .tutorial-body { display: none; }
+.tutorial-coach.collapsed .tutorial-controls { margin-top: 7px; }
+.tutorial-target { outline: 3px solid #f4cb7a !important; outline-offset: 4px; box-shadow: 0 0 0 6px #e1b2532e !important; scroll-margin-top: calc(var(--tutorial-offset) + 16px) !important; scroll-margin-bottom: calc(var(--nav-height, 70px) + var(--deal-height, 74px) + 20px) !important; }
+body.tutorial-running .view, body.tutorial-running [id], body.tutorial-running button { scroll-margin-top: calc(var(--tutorial-offset) + 16px); }
+body.tutorial-running.keyboard-open .tutorial-body { display: none; }
+body.tutorial-running.keyboard-open .tutorial-controls { margin-top: 5px; }
+body.tutorial-running .bottom-nav { z-index: 73; }
+
+@media (max-width: 760px) {
+  .pawn-title { min-height: 100svh; background-position: center; padding: max(28px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom)); }
+  .title-content { padding: 6px 0 0; }
+  .pawn-title h1 { font-size: clamp(58px, 17vw, 80px); margin-top: 16px; }
+  .title-story { margin: 16px 0; font-size: 13px; }
+  .title-buttons { margin-top: 22px; max-width: 310px; gap: 12px; }
+  .title-lantern { top: 8%; right: 8%; font-size: 29px; }
+  .tutorial-coach { width: 100%; margin-bottom: 8px; padding: max(7px, env(safe-area-inset-top)) 12px 9px; border-right: 0; border-left: 0; border-radius: 0; }
+  .tutorial-topline button { min-height: 36px; padding: 5px 8px; }
+  #tutorial-heading { font-size: 15px; }
+  #tutorial-copy { font-size: 11px; line-height: 1.65; margin: 4px 0; }
+  #tutorial-goals { font-size: 10px; max-height: 62px; gap: 3px 13px; margin: 5px 0; }
+  .tutorial-controls { gap: 6px; }
+  .tutorial-controls button { min-height: 38px; padding: 7px 10px; font-size: 10px; }
+  .tutorial-controls .tutorial-next { flex: 1; min-width: 100px; }
+  .tutorial-success { font-size: 11px; padding: 6px 9px; margin: 6px 0; }
+}
+@media (max-width: 360px) {
+  .pawn-title { padding-left: 22px; padding-right: 22px; }
+  .title-kicker { font-size: 10px; }
+  .title-english { font-size: 11px; letter-spacing: .23em; }
+  .title-story { font-size: 12px; }
+  .title-details { gap: 5px; font-size: 9px; }
+  .practice-tag { font-size: 9px; }
+  .tutorial-topline button { padding: 5px 7px; font-size: 9px; }
+  .tutorial-coach { padding-left: 10px; padding-right: 10px; }
+}
+@media (max-height: 690px) and (min-width: 500px) {
+  .pawn-title { padding: 24px; }
+  .title-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 45px; width: min(820px, 100%); align-items: center; }
+  .title-kicker, .pawn-title h1, .title-english, .title-story { grid-column: 1; }
+  .pawn-title h1 { grid-row: 2 / 5; margin: 4px 0; font-size: 67px; }
+  .title-story { display: none; }
+  .title-english { grid-row: 5; font-size: 11px; margin: 0; }
+  .title-buttons { grid-column: 2; grid-row: 1 / 6; width: 100%; margin: 0; }
+  .title-save-status { grid-column: 2; margin: 6px 0 0; }
+  .title-details, .title-footer { grid-column: 1 / 3; margin-top: 12px; }
+  .title-lantern { display: none; }
+  .tutorial-coach { padding-top: 4px; }
+  #tutorial-copy { max-height: 37px; overflow: auto; }
+  #tutorial-goals { max-height: 35px; }
+  .tutorial-topline button { min-height: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .title-lantern { animation: none; } .pixel-menu-button { transition: none; } }
+.pawn-title h1, .title-kicker, .pixel-menu-button { font-family: PawnPixel, monospace; font-weight: 400; }
+.pixel-menu-button { font-size: 16px; line-height: 1.4; } .tutorial-coach { background: #241d28; }
+body.tutorial-running, body.tutorial-running .app, .tutorial-coach { overflow-anchor: none; }
+
