@@ -14,6 +14,7 @@
 
 - `shop.webp`, `characters-0.webp` ~ `characters-2.webp`: 상점·손님 원화
 - `title.webp`: 시작 화면 원화
+- `title-logo.webp`, `dialogue-frame.webp`, `dialogue.css`: 이미지 제목·도트 대화창·새 대화 배치
 - `item-art-0.webp` ~ `item-art-5.webp`: 144종 물건 원화
 - `icon-192.png`, `icon-512.png`: 홈 화면 아이콘
 - `Galmuri11.woff2`, `FONT-LICENSE.txt`: 도트 글꼴과 라이선스

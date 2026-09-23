@@ -18,7 +18,7 @@ function relationLabel(n){return n>=65?'믿음직한 단골':n>=25?'가까워지
 function event(s){return s.activeEvent||{id:'quiet',day:s.day,title:'조용한 밤',description:'골목 끝 전당포에 불이 켜졌습니다.',kind:'market',category:'all',mult:1.15,gift:0}}
 function log(s,text,type='normal'){s.log.unshift({day:s.day,text,type});s.log=s.log.slice(0,40)}
 function notify(s,text){s.notices.push(text);s.notices=s.notices.slice(-8)}
-function history(o,speaker,text){o.history.push({speaker,text});o.history=o.history.slice(-32);if(speaker==='customer')o.feedback=text}
+function history(o,speaker,text){o.history.push({speaker,text});if(speaker==='customer')o.feedback=text}
 function note(o,text){if(!o.notes.includes(text))o.notes.push(text);o.notes=o.notes.slice(-12);history(o,'note',text)}
 function changeRelation(s,delta,reason){const o=s.current,old=relationship(s,o.character),next=clamp(old+delta,-100,100);s.relationships[o.character]=next;o.relationDelta+=(next-old);if(next!==old)history(o,'note','친밀도 '+(next>old?'+':'')+(next-old)+' · '+reason)}
 function line(s,key,fallback){const o=s.current,p=profile(o.character),list=p.lines?.[key];const text=Array.isArray(list)&&list.length?pick(s,list):fallback;return String(text||'').replace(/\{item\}/g,item(o.itemId).name).replace(/\{price\}/g,Math.round(o.price).toLocaleString('ko-KR')).replace(/\{category\}/g,CATEGORIES[item(o.itemId).category]||'물건')}

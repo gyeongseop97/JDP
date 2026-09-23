@@ -10,7 +10,7 @@
   title.id = 'title-screen';
   title.className = 'pawn-title';
   title.setAttribute('aria-label', '수상한 전당포 시작 화면');
-  title.innerHTML = '<div class="title-shade"></div><div class="title-lantern" aria-hidden="true">✧</div><div class="title-content"><div class="title-kicker">자정에만 문을 여는 가게</div><h1><span>수상한</span><br>전당포</h1><p class="title-english">MIDNIGHT PAWN <span>v4</span></p><p class="title-story">누군가에게는 고물.<br>누군가에게는 평생의 보물.<br><em>오늘 밤, 당신은 무엇을 믿을 건가요?</em></p><div class="title-buttons"><button class="pixel-menu-button new-game" data-onboard="new"><span aria-hidden="true">✦</span>새로 시작</button><button class="pixel-menu-button" data-onboard="continue"><span aria-hidden="true">▣</span>불러오기</button><button class="pixel-menu-button tutorial-menu-button" data-onboard="tutorial"><span aria-hidden="true">⌕</span>체험 튜토리얼<small>직접 대화하고 거래하며 배우기</small></button></div><p class="title-save-status"></p><div class="title-details"><span>144가지 물건</span><i>·</i><span>24명의 손님</span><i>·</i><span>9개 등급</span></div><p class="title-footer">시간 제한 없이, 천천히 읽고 흥정하세요.</p></div>';
+  title.innerHTML = '<div class="title-shade"></div><div class="title-lantern" aria-hidden="true">✧</div><div class="title-content"><div class="title-kicker">자정에만 문을 여는 가게</div><h1 class="title-logo-heading"><img class="title-logo" src="title-logo.webp" alt="수상한 전당포" width="1536" height="1024" fetchpriority="high"></h1><p class="title-english">MIDNIGHT PAWN <span>v4.1</span></p><p class="title-story">누군가에게는 고물.<br>누군가에게는 평생의 보물.<br><em>오늘 밤, 당신은 무엇을 믿을 건가요?</em></p><div class="title-buttons"><button class="pixel-menu-button new-game" data-onboard="new"><span aria-hidden="true">✦</span>새로 시작</button><button class="pixel-menu-button" data-onboard="continue"><span aria-hidden="true">▣</span>불러오기</button><button class="pixel-menu-button tutorial-menu-button" data-onboard="tutorial"><span aria-hidden="true">⌕</span>체험 튜토리얼<small>직접 대화하고 거래하며 배우기</small></button></div><p class="title-save-status"></p><div class="title-details"><span>144가지 물건</span><i>·</i><span>24명의 손님</span><i>·</i><span>9개 등급</span></div><p class="title-footer">시간 제한 없이, 천천히 읽고 흥정하세요.</p></div>';
   document.body.append(title);
 
   const coach = document.createElement('aside');
@@ -82,8 +82,8 @@
   const clickGoal = (label, selector) => ({ label, target: selector, test: (_s, event) => event?.type === 'click' && event.element?.matches(selector) });
   const offerGoal = label => ({ label, target: '#offer-form', test: (_s, event) => eventMatches(event, 'offer') && !!event.result.accepted });
   const steps = [
-    { chapter: '말 속의 모순', title: '먼저, 출처를 물어보세요', copy: '판매 손님에게 질문해 보세요. 진위는 버튼 하나로 밝혀지지 않습니다. 처음 들은 연도와 출처를 기억해 두세요.', setup: () => setState(sellerScene(false)), view: 'trade', goals: [actionGoal('“어디에서 구하셨나요?” 선택', 'talk', 'origin', '[data-talk="origin"]')], success: '첫 진술이 단서 노트에 남았어요. 이제 같은 이야기를 다른 각도에서 물어봅니다.' },
-    { chapter: '말 속의 모순', title: '자세히 물으면 이야기가 달라질까요?', copy: '방금 말한 취득 연도와 제작 연도를 비교해 보세요. 이 장면은 거짓 출처를 말하는 손님을 연습하도록 준비했습니다.', setup: () => ensureSellerTalk('origin'), goals: [actionGoal('연도와 이전 주인을 자세히 묻기', 'talk', 'detail', '[data-talk="detail"]')], success: '처음 취득했다는 해보다 물건이 만들어진 해가 더 늦습니다. 모순이 있을 때만 새 선택지가 열립니다.' },
+    { chapter: '말 속의 모순', title: '먼저, 출처를 물어보세요', copy: '손님 그림 아래에서 출처를 물어보세요. 대답을 읽은 뒤 “전체 대화”를 열고 닫아 보세요. 처음 들은 연도와 출처를 기억해 두세요.', setup: () => setState(sellerScene(false)), view: 'trade', goals: [actionGoal('“어디에서 구하셨나요?” 선택', 'talk', 'origin', '[data-talk="origin"]'), clickGoal('전체 대화를 열어 기록 확인', '#conversation-history'), { label: '기록을 닫고 대화로 돌아오기', target: '#close-conversation', test: (_s, event) => event?.type === 'archive-close' }], success: '첫 진술은 단서 노트와 “전체 대화”에 남았어요. 이제 같은 이야기를 다른 각도에서 물어봅니다.' },
+    { chapter: '말 속의 모순', title: '자세히 물으면 이야기가 달라질까요?', copy: '방금 말한 취득 연도와 제작 연도를 비교해 보세요. 이 장면은 거짓 출처를 말하는 손님을 연습하도록 준비했습니다.', setup: () => ensureSellerTalk('origin'), goals: [actionGoal('연도와 이전 주인을 자세히 묻기', 'talk', 'detail', '[data-talk="detail"]')], success: '처음 취득했다는 해보다 물건이 만들어진 해가 더 늦습니다. 반박 선택지가 열려도 모순이 있다는 보장은 없습니다. 들은 내용을 직접 비교하세요.' },
     { chapter: '말 속의 모순', title: '확인한 모순을 근거로 짚으세요', copy: '대화 기회는 한정되어 있어요. 앞뒤가 다른 진술을 짚어 출처 설명을 철회하게 만들어 보세요.', setup: () => ensureSellerTalk('origin', 'detail'), goals: [actionGoal('앞뒤가 다른 진술을 짚어 보기', 'talk', 'challenge', '[data-talk="challenge"]')], success: '출처의 거짓말을 잡았습니다. 하지만 출처가 거짓이어도 물건 자체는 진품일 수 있어요.' },
     { chapter: '말 속의 모순', title: '내가 정한 금액을 직접 제안하기', copy: '아래 금액 칸에 250을 직접 적고 “가격 제안”을 누르세요. 금액 합의와 실제 거래 확정은 별개입니다.', goals: [{ label: '금액 칸에 숫자 직접 입력', target: '#offer-price', test: (_s, event) => event?.type === 'input' && event.element?.id === 'offer-price' && Number(event.element.value.replaceAll(',', '')) > 0 }, offerGoal('가격을 제안하여 합의하기')], success: '손님이 내 제안을 수락했어요. 아직 돈이나 물건은 오가지 않았습니다.' },
     { chapter: '말 속의 모순', title: '거래를 확정하고 결과를 보세요', copy: '아래 매입 버튼을 눌러 보세요. 이 연습에서는 손해를 감수하고 가품 거래의 결과를 확인합니다. 실제 저장과 금고는 바뀌지 않아요.', goals: [actionGoal('합의한 금액으로 매입하기', 'accept', undefined, '#buy-button')], success: '같은 이름의 물건도 개체마다 진위가 다릅니다. 매입 뒤에야 실제 가치와 손님의 의도가 드러나죠.' },
@@ -111,7 +111,7 @@
     { chapter: '영업을 이어가는 법', title: '쪽박을 맞아도 다시 시작할 수 있어요', copy: '돈과 재고를 거의 잃은 연습 장면입니다. 가게 관리 맨 아래의 옆집 심부름을 눌러 보세요. 재고가 없고 120G 미만일 때 하루 한 번 재기 자금을 받을 수 있습니다.', setup: () => { const s = sellerScene(true, 8601); s.coins = 30; s.stock = []; s.aidDay = 0; setState(s); }, view: 'shop', goals: [actionGoal('옆집 심부름으로 재기 자금 받기', 'aid', undefined, '#aid-button')], success: '모든 기본 기능을 직접 해 봤어요. 이제 무엇을 믿고 얼마에 거래할지 직접 결정할 차례입니다.' }
   ];
 
-  function closeGameDialog() { const dialog = $('#detail-dialog'); if (dialog?.open) dialog.close(); }
+  function closeGameDialog() { for (const id of ['#detail-dialog', '#conversation-dialog']) { const dialog = $(id); if (dialog?.open) dialog.close(); } }
   function clearHighlight() { document.querySelectorAll('.tutorial-target').forEach(el => el.classList.remove('tutorial-target')); }
   function measureCoach() { document.documentElement.style.setProperty('--tutorial-offset', active && !coach.hidden ? Math.ceil(coach.getBoundingClientRect().height) + 16 + 'px' : '0px'); }
   function targetForStep() {
@@ -143,7 +143,7 @@
     const target = targetForStep();
     if (!target || !target.getClientRects().length) return;
     target.classList.add('tutorial-target');
-    if (scroll && !($('#detail-dialog')?.open && !target.closest('dialog'))) scrollTarget(target);
+    if (scroll && !(document.querySelector('dialog[open]') && !target.closest('dialog'))) scrollTarget(target);
   }
   function renderCoach(scroll = false) {
     if (!active) return;
@@ -231,6 +231,7 @@
   document.addEventListener('focusin', event => { if (active && event.target.id === 'offer-price') requestAnimationFrame(() => scrollTarget($('#offer-form'))); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && menu.open) menu.close(); });
   $('#detail-dialog')?.addEventListener('close', () => { if (active && !progress.every(Boolean)) highlight(true); });
+  $('#conversation-dialog')?.addEventListener('close', () => { if (active) evaluate({ type: 'archive-close' }); });
   window.addEventListener('resize', measureCoach);
   if (window.ResizeObserver) { coachObserver = new ResizeObserver(measureCoach); coachObserver.observe(coach); }
   window.PawnOnboarding = { showTitle, startTutorial, get tutorialActive() { return active; }, get tutorialStep() { return stepIndex; }, get tutorialSteps() { return steps.length; } };

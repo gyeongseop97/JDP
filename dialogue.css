@@ -1,0 +1,63 @@
+/* Generated pixel frame, current line and choices share one character panel. */
+.rpg-dialogue{margin-top:-1px;padding:4px 5px 7px;min-height:0;border:18px solid transparent;border-image:url('dialogue-frame.webp') 100 / 18px / 0 stretch;background:#211d29;background-clip:border-box;scroll-margin-top:16px;scroll-margin-bottom:calc(var(--nav-height) + var(--deal-height) + 18px)}
+.dialogue-topline{display:flex;align-items:center;gap:8px;min-height:44px}
+.speaker-identity{flex:1;min-width:0}
+.speaker-identity strong{display:block;font-family:PawnPixel,monospace;font-size:17px;font-weight:400;line-height:1.6}
+.speaker-identity>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:#af9eac;line-height:1.6}
+.dialogue-utilities{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.dialogue-utilities button{min-height:44px;border:1px solid #685545;background:#2e2630;color:#d2b786;border-radius:0;font-size:11px;padding:7px 9px;white-space:nowrap}
+.dialogue-utilities #customer-info{width:36px;padding:7px 0;color:#ab96a5;background:transparent;border-color:#4e3e4d}
+#history-count{font-size:9px;color:#a494a6;margin-left:3px;font-variant-numeric:tabular-nums}
+.rpg-dialogue .current-dialogue{font-size:15px;line-height:1.9;color:#f1e3cc;margin:13px 2px 16px;min-height:3.8em;word-break:keep-all;overflow-wrap:anywhere}
+.dialogue-status{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 10px;font-size:10px;color:#a58f9d}
+.dialogue-status #patience-label{margin:0;font-size:10px;color:#9db8a7}
+.dialogue-status #talk-count{white-space:nowrap;color:#b5a48f}
+.rpg-dialogue .dialogue-options{grid-template-columns:1fr;gap:6px;margin:0;padding-top:10px;border-top:1px solid #594349}
+.rpg-dialogue .dialogue-choice{flex-direction:row;align-items:center;gap:10px;min-height:46px;padding:10px 11px;border:1px solid #5a4751;box-shadow:inset 0 1px #4b3a44,inset 0 -2px #1d1921;background:#30262f}
+.rpg-dialogue .dialogue-choice strong{flex:1;font-size:13px;line-height:1.65;font-weight:500;color:#e4d4be;word-break:keep-all;overflow-wrap:anywhere}
+.choice-marker{display:grid;place-items:center;width:18px;height:18px;flex-shrink:0;font:10px PawnPixel,monospace;color:#bd9766;border:1px solid #6e5347;background:#261e27}
+.choice-arrow{color:#a68564;font-size:20px;line-height:1}
+.rpg-dialogue .dialogue-choice:hover{border-color:#c8a56f;background:#413038}
+.rpg-dialogue .dialogue-choice.risky{border-color:#785056}
+.rpg-dialogue .dialogue-choice.risky .choice-marker{color:#c18a84;border-color:#7b5056}
+.rpg-dialogue .quiet-note{font-size:11px;line-height:1.8;color:#b3a1b0;padding:3px 2px}
+.shop-side{min-width:0}.trade-panel{min-width:0}
+.relationship-strip{margin-bottom:10px}.trade-panel .investigation-panel{margin-top:0}
+/* The conversation archive is only visible when opened. */
+body.conversation-open{overflow:hidden}
+.conversation-modal{width:min(680px,calc(100vw - 28px));height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);margin:auto;padding:0;border:14px solid transparent;border-image:url('dialogue-frame.webp') 100 / 14px / 0 stretch;background:#211d29;color:var(--ink);box-shadow:0 24px 90px #000b;overflow:hidden}
+.conversation-modal:not([open]){display:none}.conversation-modal[open]{display:flex;flex-direction:column}
+.conversation-modal::backdrop{background:#0c0913d9;backdrop-filter:blur(4px)}
+.conversation-modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 12px 14px;flex-shrink:0}
+.conversation-modal-header h2{font:21px/1.6 PawnPixel,monospace;margin:2px 0 4px;color:#eed2a4}
+.conversation-modal-header .eyebrow{font-size:9px;letter-spacing:1.5px;color:#b19273}
+.conversation-modal-header p{font-size:12px;color:#b1a0af;margin:0;line-height:1.7}
+#close-conversation{color:#c2ad98;border-color:#6a534d}
+.conversation-modal .dialogue-log{flex:1;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;margin:0 8px;padding:17px 13px;border:1px solid #4f3f49;background:#17141d;scrollbar-color:#8d7357 #211c28;touch-action:pan-y}
+.conversation-modal .dialogue-line{grid-template-columns:64px minmax(0,1fr);gap:11px;margin-bottom:20px}
+.conversation-modal .dialogue-line p{font-size:14px;line-height:1.85}
+.conversation-modal .dialogue-line>span{font-size:11px;line-height:1.85;overflow-wrap:anywhere}
+.conversation-modal .dialogue-line.note p{font-size:12px}
+.conversation-modal footer{flex-shrink:0;padding:14px 10px 8px;color:#978597;font-size:10px;text-align:center;line-height:1.6}
+/* Raster Korean title replaces the former text title. */
+.pawn-title h1.title-logo-heading{margin:5px 0 -10px;font-size:0;line-height:0;letter-spacing:0;text-shadow:none}
+.title-logo{display:block;width:min(410px,100%);height:auto;margin:auto;image-rendering:pixelated;filter:drop-shadow(0 5px 0 #160e1c66)}
+.title-english{margin-top:0}
+@media(min-width:1000px){.trade-layout{grid-template-columns:minmax(0,1.14fr) minmax(0,1fr);gap:25px}.rpg-dialogue .dialogue-options{grid-template-columns:1fr 1fr}.rpg-dialogue .dialogue-choice{gap:7px;padding:10px 9px}.rpg-dialogue .dialogue-choice strong{font-size:12px}.scene{height:310px}}
+@media(max-width:760px){
+ .rpg-dialogue{border-width:14px;border-image-width:14px;padding:3px 3px 5px}
+ .rpg-dialogue .current-dialogue{font-size:14px;line-height:1.85;margin:12px 1px 14px;min-height:3.7em}
+ .rpg-dialogue .dialogue-choice{min-height:45px;padding:9px 10px}
+ .rpg-dialogue .dialogue-choice strong{font-size:12px;line-height:1.65}
+ .dialogue-topline{gap:6px}.speaker-identity strong{font-size:16px}
+ .relationship-strip{padding:9px 0 6px;margin-bottom:0}.shelf-preview{margin-top:7px}
+ .conversation-modal{width:calc(100vw - 20px);height:calc(100dvh - 28px);max-height:calc(100dvh - 28px);border-width:11px;border-image-width:11px}
+ .conversation-modal-header{padding:8px 7px 12px}.conversation-modal-header h2{font-size:19px}
+ .conversation-modal .dialogue-log{margin:0 2px;padding:14px 10px}
+ .conversation-modal .dialogue-line{grid-template-columns:48px minmax(0,1fr);gap:9px}
+ .conversation-modal .dialogue-line p{font-size:13px;line-height:1.85}
+ .conversation-modal footer{font-size:9px;padding-top:11px}
+ .title-logo{width:min(350px,100%)}
+}
+@media(max-width:360px){.dialogue-utilities button{font-size:10px;padding:7px}.dialogue-utilities #customer-info{width:30px}.speaker-identity>span{font-size:9px}.speaker-identity strong{font-size:15px}.rpg-dialogue .current-dialogue{font-size:13px}.rpg-dialogue .dialogue-choice{gap:7px}.title-logo{width:100%}}
+@media(max-height:500px) and (orientation:landscape){.pawn-title h1.title-logo-heading{margin:0}.title-logo{max-height:185px;width:100%;object-fit:contain}.conversation-modal-header{padding:4px 7px 8px}.conversation-modal-header .eyebrow{display:none}.conversation-modal-header h2{font-size:16px}.conversation-modal-header p{font-size:10px}.conversation-modal footer{padding:7px}.conversation-modal{height:calc(100dvh - 20px);max-height:calc(100dvh - 20px)}}
