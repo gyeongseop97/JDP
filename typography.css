@@ -1,0 +1,45 @@
+/* Every game surface uses the bundled Korean pixel face, including native controls. */
+:root{--game-font:PawnPixel,monospace;font-family:var(--game-font);font-synthesis:none}
+html,body,body *,body *::before,body *::after{font-family:var(--game-font)!important;font-weight:400!important;font-synthesis:none}
+input::placeholder,textarea::placeholder{font-family:var(--game-font)!important;font-weight:400;font-synthesis:none}
+button,input,select,textarea{font-family:var(--game-font)!important}
+/* Give the square Hangul glyphs space rather than compressing or faking bold strokes. */
+.brand h1,.lot-heading h2,.section-heading h2,.wallet strong,.asking strong,.gold-input input,.value-reveal,.reveal h3{letter-spacing:0}
+.rpg-dialogue .current-dialogue{font-size:15px;line-height:1.9}
+.rpg-dialogue .dialogue-choice strong{font-size:13px;line-height:1.7}
+.dialogue-line p,.conversation-modal .dialogue-line p,.modal p,.game-help{line-height:1.9}
+.speaker-identity>span,.dialogue-utilities button,#history-count,.dialogue-status,.dialogue-status #patience-label,.dialogue-status #talk-count,.choice-marker,.rpg-dialogue .quiet-note{font-size:11px}
+.eyebrow,.title-kicker,.title-english span,.title-save-status,.title-details,.title-footer,.tutorial-menu-button small,.brand div>span{font-size:11px}
+.customer-manner,.relation-badge,.record-label,.taste-note,.person-card .taste-note,.person-card .relation-note,.price-note,.helper,.investigation-panel .quiet-note,.investigation-workbench>span,.investigation-targets .investigation-choice small,.buyer-lot small{font-size:11px!important;line-height:1.65}
+.scene-label,.scene-time,.scene-bottom,.dialogue-line>span,.conversation-modal .dialogue-line>span,.conversation-modal-header .eyebrow,.conversation-modal footer,.conversation-modal-header p{font-size:11px}
+.practice-tag,#tutorial-counter,.tutorial-topline button,.tutorial-controls button,#tutorial-reading-links button,#tutorial-goals{font-size:11px}
+.title-english{letter-spacing:.18em}.title-kicker{letter-spacing:.1em}
+.gold-input input{font-size:22px}.wallet strong,.asking strong{font-variant-numeric:tabular-nums}
+@media(max-width:760px){
+ .rpg-dialogue .current-dialogue{font-size:14px;line-height:1.9}
+ .rpg-dialogue .dialogue-choice strong{font-size:12px;line-height:1.75}
+ .dialogue-utilities button{font-size:11px;padding-left:7px;padding-right:7px}
+ .conversation-modal .dialogue-line p{font-size:13px;line-height:1.9}
+ .brand h1{font-size:20px;letter-spacing:-.5px}.brand div>span{font-size:10px;letter-spacing:1px}
+ .lot-heading h2{font-size:22px}.section-heading h2{font-size:26px}
+ .tutorial-topline{gap:5px}.tutorial-topline button{padding-left:6px;padding-right:6px}
+ .title-details{gap:5px}
+}
+@media(max-width:360px){
+ .brand h1{font-size:18px}.brand div>span{font-size:9px;letter-spacing:.7px}
+ .speaker-identity strong{font-size:14px}.speaker-identity>span{font-size:11px}
+ .dialogue-utilities{gap:3px}.dialogue-utilities #customer-info{width:28px}
+ .dialogue-utilities button{padding-left:5px;padding-right:5px}
+ .tutorial-topline{flex-wrap:wrap}.tutorial-topline>div{margin-left:auto}
+ .title-details{font-size:10px}.conversation-modal .dialogue-line{grid-template-columns:44px minmax(0,1fr);gap:7px}
+}
+
+/* Replace browser-native titles so hover help also uses the game face. */
+[data-tooltip]{position:relative}
+[data-tooltip]::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:0;z-index:95;width:max-content;max-width:min(270px,75vw);box-sizing:border-box;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;text-align:left;font-size:12px;line-height:1.75;letter-spacing:0;padding:10px 12px;border:2px solid #94714d;background:#211a29;color:#e3d1b8;box-shadow:3px 3px #0e0b16;pointer-events:none;opacity:0;visibility:hidden}
+#coins::after{top:calc(100% + 8px);bottom:auto;left:auto;right:0;font-size:13px}
+@media(hover:hover) and (pointer:fine){[data-tooltip]:hover::after{opacity:1;visibility:visible}}
+[data-tooltip]:focus-visible::after{opacity:1;visibility:visible}
+@media(max-width:360px){.tutorial-controls{flex-wrap:wrap}}
+
+.modal h2,.onboarding-dialog h2{word-break:keep-all;overflow-wrap:break-word}

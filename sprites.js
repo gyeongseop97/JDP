@@ -103,7 +103,7 @@ function itemCanvas(canvas,data,grade=1,unknown=false){
   canvasStates.set(canvas,{data,grade,unknown,index});
   // Never load item art for an undiscovered codex entry.
   if(unknown||!data){
-    g.fillStyle='#504c61';g.font='bold 76px monospace';g.textAlign='center';g.fillText('?',64,94);return;
+    g.fillStyle='#504c61';g.font='77px PawnPixel, monospace';g.textAlign='center';g.fillText('?',64,94);return;
   }
   if(index!==undefined){
     const state=atlas(Math.floor(index/24));
