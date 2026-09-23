@@ -10,7 +10,7 @@
 - 게시 설정을 마친 뒤 사용할 예상 주소: [수상한 전당포](https://gyeongseop97.github.io/JDP/)
 - 처음 올린다면 [GitHub 업로드 안내](GITHUB-PAGES.md)를 순서대로 따라 하세요.
 
-ZIP 파일을 그대로 올리지 마세요. 압축을 푼 **폴더 안의 파일들과 `assets` 폴더**를 저장소 최상위에 올려, 저장소를 열자마자 `index.html`이 보이게 해야 합니다. 위 주소는 게시 완료를 확인한 주소가 아닙니다.
+이번 버전은 하위 폴더 없이 이미지와 게임 파일을 모두 같은 위치에 넣었습니다. ZIP 파일을 그대로 올리지 마세요. 압축을 푼 **폴더 안의 파일 전체**를 저장소 최상위에 올려, 저장소를 열자마자 `index.html`이 보이게 해야 합니다. 위 주소는 게시 완료를 확인한 주소가 아닙니다.
 
 ## 플레이
 
@@ -57,7 +57,8 @@ node preview.cjs --base /JDP/ --port 4175
 - `app.js`, `panels.js`: 화면과 조작
 - `items.js`, `characters.js`: 콘텐츠 데이터
 - `sprites.js`: 아이템 도트 렌더링
-- `assets/`: 상점 배경·캐릭터 원화(WebP), 홈 화면 아이콘
+- `shop.webp`, `characters-0.webp` ~ `characters-2.webp`: 배경과 24명의 캐릭터 원화
+- `icon-192.png`, `icon-512.png`: 홈 화면 아이콘
 - `GITHUB-PAGES.md`: GitHub 업로드 및 게시 안내
 
 배경 한 장과 캐릭터 시트 세 장은 이 게임용으로 생성했습니다. 자세한 제작 기록은 `ARTWORK.md`에 있습니다.
