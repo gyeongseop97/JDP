@@ -1,0 +1,12 @@
+/* Compact, touch-friendly appraisal workbench. */
+#appraisal-book{margin:12px 0;min-height:48px;border-radius:0;border:2px solid #c4a072;background:#332d35;color:#f4dab1;box-shadow:3px 3px 0 #100e16}
+.tool-purpose{color:#d5c8b5;line-height:1.65;margin:10px 0;font-size:14px}
+.appraisal-observation{margin:14px 0 8px;padding:15px;background:#211f2b;border:2px solid #ae9270;box-shadow:inset 3px 3px 0 #121019;scroll-margin-top:90px}
+.appraisal-observation p{line-height:1.8;margin:8px 0 0;color:#f4e6cb;overflow-wrap:anywhere}
+.comparison-card,.reference-card{border-top:1px solid #514754;padding:14px 0;text-align:left}
+.comparison-card h4,.appraisal-review h4{margin:0 0 12px;color:#e9c38d;line-height:1.7}
+.comparison-card dl{display:block;margin:0}.comparison-card dt{color:#adabae;font-size:12px;margin-top:10px}.comparison-card dd{margin:4px 0 12px;color:#e7ddcc;line-height:1.8}
+.comparison-card details{padding:8px;background:#25232d}.comparison-card summary{font-size:13px;cursor:pointer}.comparison-card p,.reference-card p{font-size:14px;line-height:1.85}
+.appraisal-review{margin:18px 0;padding:16px;background:#211e29;border:2px solid #6c5c4e;text-align:left}.appraisal-review summary{color:#e9c38d;line-height:1.7;cursor:pointer}.appraisal-review article{border-top:1px solid #4a404c;padding:16px 0 0;margin-top:16px}.appraisal-review p{line-height:1.85;font-size:14px}.appraisal-review .review-note{color:#c5b79e}
+#appraisal-notes{min-width:0}.investigation-heading{gap:8px;flex-wrap:wrap}.investigation-heading span{font-size:12px}.investigation-choice{min-height:64px!important}.investigation-targets{grid-template-columns:repeat(3,minmax(0,1fr))}.investigation-choice strong{word-break:keep-all;overflow-wrap:anywhere}.dialogue-choice{min-height:48px}
+@media(max-width:400px){.investigation-targets{grid-template-columns:1fr}.investigation-choice{min-height:48px!important;display:flex;align-items:center;justify-content:space-between;gap:8px}.investigation-choice small{max-width:48%;font-size:11px}.appraisal-observation{padding:12px}}

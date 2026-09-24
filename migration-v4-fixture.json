@@ -1,0 +1,167 @@
+{
+  "version": 4,
+  "seed": 3494839124,
+  "coins": 4321,
+  "day": 1,
+  "visitor": 1,
+  "turn": 0,
+  "serial": 1,
+  "xp": 0,
+  "bought": 0,
+  "sold": 0,
+  "profit": 0,
+  "rare": 0,
+  "legend": 0,
+  "stock": [],
+  "discovered": {},
+  "met": {
+    "5": 1
+  },
+  "relationships": {},
+  "claimed": [],
+  "upgrades": {
+    "appraisal": 0,
+    "shelves": 0,
+    "word": 0
+  },
+  "log": [
+    {
+      "day": 1,
+      "text": "오래된 열쇠를 받았다. 오늘부터 이 가게의 주인이다.",
+      "type": "normal"
+    }
+  ],
+  "notices": [],
+  "current": {
+    "uid": "lot-1",
+    "itemId": "mask-03",
+    "character": 5,
+    "kind": "seller",
+    "grade": 1,
+    "claimedGrade": 1,
+    "condition": 2,
+    "genuine": true,
+    "sleeper": false,
+    "apparent": 195,
+    "value": 195,
+    "estimate": 175,
+    "asking": 140,
+    "price": 140,
+    "baseFloor": 119,
+    "floor": 119,
+    "paid": 0,
+    "sale": 0,
+    "attempts": 0,
+    "status": "offered",
+    "wasFirst": false,
+    "line": "협상 모듈 점검 완료, 거래를 요청합니다.",
+    "negotiated": false,
+    "history": [
+      {
+        "speaker": "customer",
+        "text": "협상 모듈 점검 완료, 거래를 요청합니다."
+      },
+      {
+        "speaker": "player",
+        "text": "어디에서 구하셨나요?"
+      },
+      {
+        "speaker": "note",
+        "text": "손님의 말: 2010년, 이웃의 선물. 바닥 표식은 빛을 받으면 가장자리가 푸르게 보여요."
+      },
+      {
+        "speaker": "customer",
+        "text": "확인 불가 구간은 공백으로 출력합니다. 2010년에 이웃의 선물로 받았어요. 바닥 표식은 빛을 받으면 가장자리가 푸르게 보여요. 오래되어 기억이 흐린 부분도 있겠네요."
+      },
+      {
+        "speaker": "player",
+        "text": "돋보기로 각인·표식을 살펴봅니다."
+      },
+      {
+        "speaker": "note",
+        "text": "홈에 먼지가 눌려 있습니다. 선 끝 두 군데가 닳아 있습니다."
+      }
+    ],
+    "notes": [
+      "손님의 말: 2010년, 이웃의 선물. 바닥 표식은 빛을 받으면 가장자리가 푸르게 보여요.",
+      "홈에 먼지가 눌려 있습니다. 선 끝 두 군데가 닳아 있습니다."
+    ],
+    "talkLeft": 2,
+    "patience": 5,
+    "mood": 0,
+    "relationDelta": 0,
+    "talked": [
+      "origin"
+    ],
+    "physicalUsed": true,
+    "suspicion": 0,
+    "acceptedOffer": false,
+    "offerRelationApplied": false,
+    "lastOffer": null,
+    "leverage": 0,
+    "checks": [
+      "lens-mark"
+    ],
+    "clues": {},
+    "lastCheck": null,
+    "verdict": "",
+    "feedback": "확인 불가 구간은 공백으로 출력합니다. 2010년에 이웃의 선물로 받았어요. 바닥 표식은 빛을 받으면 가장자리가 푸르게 보여요. 오래되어 기억이 흐린 부분도 있겠네요.",
+    "intentionRoll": 0.2618136976379901,
+    "intent": "honest",
+    "evidence": {
+      "physical": 0.6811288483440876,
+      "year": 2010,
+      "origin": "이웃의 선물",
+      "pressure": 0.780054627219215,
+      "focus": "light-mark",
+      "disputed": false,
+      "contradiction": false,
+      "richSignal": false,
+      "shareMultiplier": 1.3009804945252836,
+      "code": "R60",
+      "markYear": 2004,
+      "detailYear": 2004,
+      "claimSeen": true,
+      "claim": "바닥 표식은 빛을 받으면 가장자리가 푸르게 보여요."
+    },
+    "inspectionLeft": 1,
+    "inspected": [
+      "lens-mark"
+    ],
+    "inspectionResults": {
+      "lens-mark": "홈에 먼지가 눌려 있습니다. 선 끝 두 군데가 닳아 있습니다."
+    },
+    "investigationVersion": 1,
+    "investigations": {
+      "lens-mark": "홈에 먼지가 눌려 있습니다. 선 끝 두 군데가 닳아 있습니다.",
+      "lens-material": "표면에 크기가 다른 알갱이가 이어집니다. 모서리에 먼지가 붙어 있습니다.",
+      "lens-wear": "손이 닿는 면의 색이 옅고, 안쪽에는 작은 흠집이 있습니다.",
+      "light-mark": "불빛 아래 표식 가장자리가 푸르게 보입니다. 획을 따라 같은 빛깔이 이어집니다.",
+      "light-material": "빛의 각도를 바꾸자 작은 반사점들이 옆으로 이동합니다.",
+      "light-wear": "표면을 따라 빛이 움직이다가 가장자리에서 끊깁니다."
+    }
+  },
+  "closing": false,
+  "dayStart": 650,
+  "dayBought": 0,
+  "dayProfit": 0,
+  "eventDone": false,
+  "aidDay": 0,
+  "sound": false,
+  "activeEvent": {
+    "id": "e18",
+    "title": "노바의 귀환 좌표",
+    "description": "노바의 귀환 비콘이 침묵했습니다. 우주 물품 1점을 전달하면 탐사 협력금 180G를 받습니다.",
+    "kind": "request",
+    "category": "cosmic",
+    "mult": 1.4,
+    "gift": 180,
+    "character": 17,
+    "requestText": "별의 흔적이 있으면 돼요. 집으로 향하는 신호를 다시 켜고 싶어요.",
+    "resolveText": "비콘이 깜빡입니다. 첫 번째 저장 좌표는 이 가게입니다.",
+    "day": 1
+  },
+  "lastEventId": "e18",
+  "lastCharacter": 5,
+  "lastItemId": "mask-03"
+}

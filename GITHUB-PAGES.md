@@ -1,3 +1,7 @@
+# v5 업데이트 안내
+
+UPDATE-v5.md를 먼저 읽고 압축 안의 모든 파일을 기존 위치에 덮어쓰세요. appraisal-data.js, voices.js, appraisal.css를 포함해야 합니다. 아래는 최초 게시 절차입니다.
+
 # GitHub에 게임 업데이트하기
 
 1. 받은 ZIP을 **압축 해제**합니다.
