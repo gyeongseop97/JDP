@@ -158,13 +158,14 @@ const tea=[
  '천천히 마실게! 돌아가는 길을 조금 늦춰도 괜찮겠어. 이런 날도 있어야지!',
  '차는 잘 마시겠습니다. 다음에도 이 시간에 들러도 되겠습니까?'
 ];
+for(const guest of G.PAWN_EXTRA_GUESTS||[]){styles.push(guest.register);sellerOpen.push(guest.voice.sellerOpen);buyerOpen.push(guest.voice.buyerOpen);leads.push(guest.lead);hearsay.push(guest.hearsay);tea.push(guest.tea)}
 function say(index,key,data={}){
- index=Number.isInteger(Number(index))&&Number(index)>=0&&Number(index)<24?Number(index):1;
+ index=Number.isInteger(Number(index))&&Number(index)>=0&&Number(index)<styles.length?Number(index):1;
  let line;
  if(key==='sellerOpen'||key==='buyerOpen')line=(key==='sellerOpen'?sellerOpen:buyerOpen)[index].replaceAll('{item}',data.item||'이 물건');
  else if(key==='claim'||key==='uncertainClaim')line=leads[index]+spoken(data.detail,index)+(key==='uncertainClaim'?' '+hearsay[index]:'');
  else if(key==='tea')line=tea[index];
- else if(responseKeys.includes(key))line=responses[styles[index]][responseKeys.indexOf(key)].replaceAll('{price}',Math.round(data.price||0).toLocaleString('ko-KR'));
+ else if(responseKeys.includes(key))line=((G.PAWN_EXTRA_GUESTS||[])[index-24]?.voice[key]||responses[styles[index]][responseKeys.indexOf(key)]).replaceAll('{price}',Math.round(data.price||0).toLocaleString('ko-KR'));
  else line=G.PawnVoice.say(index,key,data);
  // Retain the sea gentleman's verbal tic even in bargaining and appraisal.
  if(index===21&&line&&!line.startsWith('뽀글.'))line='뽀글. '+line;

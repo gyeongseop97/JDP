@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
-for(const file of ['items.js','characters.js','profiles.js','appraisal-data.js','legacy-item-appraisals.js','item-appraisals.js','voices.js','trade-voice.js','origin-data.js','engine.js']){const full=path.join(__dirname,file);if(file==='profiles.js'&&!fs.existsSync(full))continue;vm.runInThisContext(fs.readFileSync(full,'utf8'),{filename:file})}
+for(const file of ['items.js','characters.js','profiles.js','appraisal-data.js','legacy-item-appraisals.js','item-appraisals.js','guest-data.js','voices.js','trade-voice.js','origin-data.js','engine.js']){const full=path.join(__dirname,file);if(file==='profiles.js'&&!fs.existsSync(full))continue;vm.runInThisContext(fs.readFileSync(full,'utf8'),{filename:file})}
 const E=PawnEngine,copy=x=>JSON.parse(JSON.stringify(x));let tests=0;
 function test(name,fn){try{fn();tests++;console.log('PASS '+name)}catch(error){console.error('FAIL '+name);throw error}}
 function rejectUnchanged(s,fn){const before=JSON.stringify(s),result=fn();assert.equal(result.ok,false);assert.equal(JSON.stringify(s),before)}
@@ -9,7 +9,7 @@ function seller(seed=123){const s=E.create(seed);s.coins=1000000;return s}
 function buyLot(s){assert.equal(s.current.kind,'seller');assert(E.accept(s).ok);return s.stock.at(-1)}
 function addLot(s,id='clock-01',overrides={}){const uid='fixture-'+(s.fixture=(s.fixture||0)+1);const lot={uid,itemId:id,grade:2,claimedGrade:2,condition:2,genuine:true,value:300,apparent:300,paid:150,displayAt:null,...overrides};s.stock.push(lot);return lot}
 function buyer(seed=551,overrides={}){const s=seller(seed);addLot(s,'clock-01',overrides);addLot(s,'book-01');for(let i=0;i<80&&s.current.kind!=='buyer';i++)advance(s);assert.equal(s.current.kind,'buyer');return s}
-test('144 items, 24 people, 24 events and atlas coordinates',()=>{assert.equal(PAWN_ITEMS.length,144);assert.equal(new Set(PAWN_ITEMS.map(x=>x.id)).size,144);assert.equal(PAWN_CHARACTERS.length,24);assert.equal(PAWN_EVENTS.length,24);for(const c of PAWN_CHARACTERS){assert.equal(c.sheet,Math.floor(c.look/8));assert.equal(c.cell,c.look%8)}if(globalThis.PAWN_PROFILES)assert.equal(PAWN_PROFILES.length,24)});
+test('144 items, 26 people, 24 events and atlas coordinates',()=>{assert.equal(PAWN_ITEMS.length,144);assert.equal(new Set(PAWN_ITEMS.map(x=>x.id)).size,144);assert.equal(PAWN_CHARACTERS.length,26);assert.equal(PAWN_EVENTS.length,24);for(const c of PAWN_CHARACTERS){assert.equal(c.sheet,Math.floor(c.look/8));assert.equal(c.cell,c.look%8)}if(globalThis.PAWN_PROFILES)assert.equal(PAWN_PROFILES.length,26)});
 test('Seed determines first visitor, item, evidence and event; first visit is not fixed',()=>{assert.deepEqual(E.create(721),E.create(721));const people=new Set(),goods=new Set(),events=new Set();for(let i=1;i<=80;i++){const s=E.create(i*19381);people.add(s.current.character);goods.add(s.current.itemId);events.add(E.event(s).id);assert.equal(s.current.wasFirst,false);assert(!s.storyQueue);assert(E.validate(s))}assert(people.size>15);assert(goods.size>40);assert(events.size>15)});
 test('No immediate customer, seller item or daily event repetition',()=>{const s=E.create(43977);let character=s.current.character,item=s.current.itemId,ev=E.event(s).id;for(let i=0;i<400;i++){if(s.closing){E.nextDay(s);assert.notEqual(E.event(s).id,ev);ev=E.event(s).id}else E.next(s);if(!s.closing){assert.notEqual(s.current.character,character);assert.notEqual(s.current.itemId,item);character=s.current.character;item=s.current.itemId}assert(E.validate(s))}});
 test('Read-only views and reload do not reroll evidence, prices, event or seed',()=>{const s=E.create(32911);E.talk(s,'origin');const before=JSON.stringify(s);for(let i=0;i<8;i++){E.profile(s.current.character);E.relationship(s,s.current.character);E.dialogueOptions(s);E.event(s)}assert.equal(JSON.stringify(s),before);const loaded=copy(s);assert(E.validate(loaded));assert.deepEqual(E.prepare(loaded),s);assert.deepEqual(E.prepare(loaded),s)});
@@ -40,7 +40,7 @@ test('Faint clues require explicit reinspection after tool upgrade',()=>{const s
 test('Hidden high craftsmanship only changes seller demand when disclosed',()=>{const s=fixture({grade:7,claimedGrade:3});const price=s.current.price;E.investigate(s,'light-material');assert.equal(s.current.price,price);E.talk(s,'share-findings');assert(s.current.price>price);rejectUnchanged(s,()=>E.talk(s,'share-findings'))});
 test('Buyer stories and guarantees follow each item without repeat affection farming',()=>{const s=buyer(433),a=s.current.stockUid,b=s.stock.find(x=>x.uid!==a).uid;E.talk(s,'story');const rel=E.relationship(s,s.current.character);E.chooseStock(s,b);assert(E.dialogueOptions(s).some(x=>x.id==='story'));E.talk(s,'story');assert.equal(E.relationship(s,s.current.character),rel);E.chooseStock(s,a);assert(!E.dialogueOptions(s).some(x=>x.id==='story'));assert(E.validate(s))});
 test('Authentic v4 save migrates without losing cash, encounter, agreed price, seed or relations',()=>{const f=path.join(__dirname,'migration-v4-fixture.json');const old=JSON.parse(fs.readFileSync(f)),before=copy(old);assert(E.validate(old));E.prepare(old);assert.equal(old.version,6);for(const k of ['coins','seed','stock','relationships'])assert.deepEqual(old[k],before[k]);for(const k of ['uid','itemId','price','acceptedOffer','patience'])assert.deepEqual(old.current[k],before.current[k]);assert(old.current.legacyHistory.length);assert(E.validate(old));const saved=JSON.stringify(old);E.prepare(old);assert.equal(JSON.stringify(old),saved)});
-test('All 24 character voices supply complete lines and explicit monetary acceptance',()=>{for(let i=0;i<24;i++)for(const key of PawnVoice.keys){const line=PawnVoice.say(i,key,{item:'시계',price:321,detail:'작은 선이 세 개입니다.',likes:'시계'});assert(line.length>4);assert(!/\{\w+\}/.test(line));if(key==='offerAccepted')assert(line.includes('321'))}});
+test('All 26 character voices supply complete lines and explicit monetary acceptance',()=>{for(let i=0;i<PAWN_CHARACTERS.length;i++)for(const key of PawnVoice.keys){const line=PawnVoice.say(i,key,{item:'시계',price:321,detail:'작은 선이 세 개입니다.',likes:'시계'});assert(line.length>4);assert(!/\{\w+\}/.test(line));if(key==='offerAccepted')assert(line.includes('321'))}});
 
 test('All 144 item-specific authenticity cases are distinct, complete and connected',()=>{assert.equal(Object.keys(PAWN_ITEM_APPRAISALS).length,144);const good=new Set(),bad=new Set(),sites=new Set(),tools=new Set();for(const it of PAWN_ITEMS){const c=PAWN_ITEM_APPRAISALS[it.id];assert(c);good.add(c.authenticity.observedGenuine);bad.add(c.authenticity.observedReplica);sites.add(c.sites.mark.label);tools.add(c.authenticity.tool);for(const genuine of [true,false]){const s=fixture({itemId:it.id,genuine,intent:'fraud'});assert.equal(s.current.appraisalEdition,61);const a=s.current.evidence.axes.authenticity;assert.equal(a.tool,c.authenticity.tool);assert.equal(a.full,genuine?c.authenticity.observedGenuine:c.authenticity.observedReplica);assert(c.authenticity.reference.includes(a.full));E.talk(s,'authenticity');assert(s.current.history.at(-1).text.includes(PawnTradeVoice.spoken(c.authenticity.claimGenuine,s.current.character)));E.investigate(s,a.tool+'-'+a.site);assert.equal(E.appraisalNotebook(s)[0].observation,a.full);if(!genuine){const price=s.current.price;E.talk(s,'challenge-authenticity');assert(s.current.price<price)}}for(const key of ['quality','condition']){assert.equal(c[key].claims.length,3);assert.equal(c[key].observations.length,3);assert(c[key].question.includes(c.sites[c[key].site].label));assert(c[key].reference.includes(c.sites[c[key].site].label));for(const observation of c[key].observations)assert(observation.includes(c.sites[c[key].site].label));}}assert.equal(good.size,144);assert.equal(bad.size,144);assert.equal(sites.size,144);assert.equal(tools.size,2)});
 test('Item-specific clues stay stable through upgrades, reload and read-only UI',()=>{const s=fixture({itemId:'toy-08',appraisalClarity:2,genuine:false});E.talk(s,'authenticity');E.investigate(s,'lens-mark');const first=s.current.inspectionResults['lens-mark'];const before=JSON.stringify(s);for(let i=0;i<5;i++){E.prepare(s);E.appraisalNotebook(s);E.dialogueOptions(s);E.investigationOptions(s)}assert.equal(JSON.stringify(s),before);E.upgrade(s,'appraisal');E.upgrade(s,'appraisal');assert.equal(s.current.inspectionResults['lens-mark'],first);E.investigate(s,'lens-mark');assert.equal(s.current.inspectionResults['lens-mark'],PAWN_ITEM_APPRAISALS['toy-08'].authenticity.observedReplica);assert(E.validate(s))});
@@ -74,7 +74,7 @@ test('Purchase date and purpose discrepancies lower demands only after the playe
 test('Wrong origin accusation changes relationship rather than revealing the other answer',()=>{for(const kind of ['date','story']){const s=originFixture(kind),price=s.current.price,rel=E.relationship(s,s.current.character);rejectUnchanged(s,()=>E.presentOrigin(s,kind));E.talk(s,'provenance');const r=E.presentOrigin(s,kind==='date'?'story':'date');assert(!r.supported);assert.equal(s.current.price,price);assert.equal(E.relationship(s,s.current.character),rel-4);assert.equal(s.current.origin.trust,'unknown');assert(!s.customerRecords[s.current.character]);rejectUnchanged(s,()=>E.presentOrigin(s,kind));assert(E.validate(s))}});
 test('Origin stories and observed trading records persist without rerolls or duplicate entries',()=>{const s=originFixture('story');E.talk(s,'provenance');E.presentOrigin(s,'story');E.accept(s);const saved=JSON.stringify(s),loaded=E.prepare(copy(s));assert.equal(JSON.stringify(loaded),saved);assert.equal(loaded.customerRecords[s.current.character].fakes,1);assert.equal(loaded.customerRecords[s.current.character].contradictions,1);rejectUnchanged(loaded,()=>E.accept(loaded));assert(E.validate(loaded))});
 test('All 144 revised clues speak naturally in polite and casual forms without leftover report endings',()=>{for(const it of PAWN_ITEMS){const c=PAWN_ITEM_APPRAISALS[it.id],r=PAWN_ORIGINS[it.id];for(const line of [c.authenticity.claimGenuine,c.authenticity.claimReplica,...c.quality.claims,...c.condition.claims,r.story,r.alternative])for(const i of [2,13]){const spoken=PawnTradeVoice.spoken(line,i);assert(!/다\.(?:\s|$)/.test(spoken),it.id+' '+spoken);assert(!spoken.includes('「'));assert(!spoken.includes(':'))}assert(r.year>1700&&r.year<2026);assert.notEqual(r.story,r.alternative)}});
-test('Counterfeit supply, rare stock and honesty differ independently across recurring customers',()=>{const s=E.create(94401),groups=Array.from({length:24},()=>({n:0,fake:0,rare:0,fraud:0}));for(let i=0;i<24000;i++){if(s.closing)E.nextDay(s);const o=s.current,g=groups[o.character];g.n++;g.fake+=!o.genuine;g.rare+=o.grade>=3;g.fraud+=o.intent==='fraud';E.next(s)}const rate=(i,k)=>groups[i][k]/groups[i].n;assert(groups.every(g=>g.n>800));assert(rate(8,'fake')-rate(20,'fake')>.35);assert(rate(23,'rare')-rate(9,'rare')>.10);assert(rate(2,'fake')>.27&&rate(2,'fraud')<.05);assert(rate(16,'fraud')>.6);assert(rate(5,'fraud')===0);assert(E.profile(2).fakeRate>.3&&E.profile(2).honesty>.95);console.log('Observed NPC rates '+JSON.stringify({honestGhost:{fake:rate(2,'fake'),fraud:rate(2,'fraud')},goblinFake:rate(8,'fake'),librarianFake:rate(20,'fake'),collectorRare:rate(23,'rare'),tailorRare:rate(9,'rare')}))});
+test('Counterfeit supply, rare stock and honesty differ independently across recurring customers',()=>{const s=E.create(94401),groups=Array.from({length:PAWN_CHARACTERS.length},()=>({n:0,fake:0,rare:0,fraud:0}));for(let i=0;i<24000;i++){if(s.closing)E.nextDay(s);const o=s.current,g=groups[o.character];g.n++;g.fake+=!o.genuine;g.rare+=o.grade>=3;g.fraud+=o.intent==='fraud';E.next(s)}const rate=(i,k)=>groups[i][k]/groups[i].n;assert(groups.every(g=>g.n>750));assert(rate(8,'fake')-rate(20,'fake')>.35);assert(rate(23,'rare')-rate(9,'rare')>.10);assert(rate(2,'fake')>.27&&rate(2,'fraud')<.05);assert(rate(16,'fraud')>.6);assert(rate(5,'fraud')===0);assert(E.profile(2).fakeRate>.3&&E.profile(2).honesty>.95);console.log('Observed NPC rates '+JSON.stringify({honestGhost:{fake:rate(2,'fake'),fraud:rate(2,'fraud')},goblinFake:rate(8,'fake'),librarianFake:rate(20,'fake'),collectorRare:rate(23,'rare'),tailorRare:rate(9,'rare')}))});
 test('Actual v6 save retains in-progress wording, evidence, cash and budgets before adopting new clues next visit',()=>{const s=JSON.parse(fs.readFileSync(path.join(__dirname,'migration-v6-fixture.json'),'utf8')),old=copy(s);assert(E.validate(s));E.prepare(s);for(const k of ['coins','seed','stock','relationships'])assert.deepEqual(s[k],old[k]);for(const k of ['evidence','history','inspectionResults','price','talkLeft','inspectionLeft'])assert.deepEqual(s.current[k],old.current[k]);assert.equal(s.current.appraisalEdition,51);assert(s.current.origin);assert(E.validate(s));const before=JSON.stringify(s);E.prepare(s);assert.equal(JSON.stringify(s),before);E.next(s);assert.equal(s.current.appraisalEdition,61);assert(E.validate(s))});
 test('New sellers and buyers begin with one greeting and named item, without free clues',()=>{
  const s=seller(61531),people=new Set(),kinds=new Set();addLot(s,'clock-01');
@@ -88,14 +88,14 @@ test('New sellers and buyers begin with one greeting and named item, without fre
   assert.equal(E.originNotebook(s)?.claim||null,null);
   assert.match(o.line,/반갑|안녕|잘 지냈|어이/);E.next(s);
  }
- assert.equal(people.size,24);assert.equal(kinds.size,2);
+ assert.equal(people.size,26);assert.equal(kinds.size,2);
 });
 test('All 144 item clues and origins keep their meaning in every character register',()=>{
  for(const it of PAWN_ITEMS){
   const c=PAWN_ITEM_APPRAISALS[it.id],r=PAWN_ORIGINS[it.id];
   for(const raw of [c.authenticity.claimGenuine,c.authenticity.claimReplica,...c.quality.claims,...c.condition.claims,r.story,r.alternative,r.year+'년에 골목 경매에서 샀다. '+r.story]){
    const clean=raw.replace(/^(?:「[^」]+」|[^:.]+):\s*/,'');
-   for(let i=0;i<24;i++){
+   for(let i=0;i<PAWN_CHARACTERS.length;i++){
     const out=PawnTradeVoice.spoken(raw,i);assert(!out.includes('undefined'));assert(!/다냥냥|단단다|입닙니다/.test(out),out);
     assert.deepEqual(out.match(/\d+/g),clean.match(/\d+/g));
     // Sentence subjects, clue sites and modifiers survive; only final predicates change.
@@ -115,7 +115,7 @@ test('All 144 item clues and origins keep their meaning in every character regis
 });
 test('All spoken routes retain cat and robot voices, and monetary responses retain amounts',()=>{
  const extra=['originCaught','originDefend','discount','praise','thanks','noPraise','tea'];
- for(let i=0;i<24;i++)for(const key of [...PawnVoice.keys,...extra]){
+ for(let i=0;i<PAWN_CHARACTERS.length;i++)for(const key of [...PawnVoice.keys,...extra]){
   const out=PawnTradeVoice.say(i,key,{item:'달빛 시계',detail:'빛이 양갈래로 퍼진다.',price:1234});
   assert(out.length>4);assert(!/[{}]|undefined/.test(out));
   if(['offerAccepted','counter','originCaught','discount','praise'].includes(key))assert(out.includes('1,234'));
@@ -130,6 +130,29 @@ test('New greeting and subsequent clue survive save/load without duplicate speec
  assert.equal(s.current.history.filter(x=>x.speaker==='customer').length,2);
  assert(E.appraisalNotebook(s).find(a=>a.key==='authenticity').claim);
  const saved=JSON.stringify(s);assert.equal(JSON.stringify(E.prepare(copy(s))),saved);
+});
+
+test('New guests participate in purchases, sales, relationships, tea and save/load',()=>{
+ for(const i of [24,25]){
+  let seed=1;while(E.create(seed).current.character!==i&&seed<5000)seed++;
+  const s=seller(seed),o=s.current;assert.equal(o.character,i);assert(o.line.includes(E.item(o.itemId).name));
+  E.talk(s,'authenticity');assert(o.history.at(-1).text.startsWith(PAWN_EXTRA_GUESTS[i-24].lead));
+  const lot=buyLot(s);assert.equal(lot.sourceCharacter,i);assert(s.customerRecords[i]);
+  const saved=JSON.stringify(s);assert.equal(JSON.stringify(E.prepare(copy(s))),saved);
+  let b;for(let n=1;n<500;n++){const candidate=buyer(n);if(candidate.current.character===i){b=candidate;break}}
+  assert(b,'Buyer missing '+i);assert(E.talk(b,'taste').ok);assert(E.talk(b,'story').ok);assert(E.offer(b,1).accepted);assert(E.accept(b).ok);assert(E.validate(b));
+  s.relationships[i]=20;closeDay(s);assert(E.nightAction(s,'tea',String(i)).ok);assert.equal(E.relationship(s,i),26);assert(s.friendStories.includes(i));assert(s.night.report.at(-1).includes(PAWN_EXTRA_GUESTS[i-24].tea));assert(E.validate(s));
+ }
+});
+test('Appended guest IDs, portraits, supply and voice coverage preserve the existing roster',()=>{
+ assert.equal(PawnVoice.count,26);assert.equal(PAWN_SUPPLY.length,26);
+ PAWN_CHARACTERS.forEach((c,i)=>assert.equal(c.id,'c'+String(i+1).padStart(2,'0')));
+ for(const i of [24,25]){
+  const c=PAWN_CHARACTERS[i],p=E.profile(i);assert(c.age>=18);assert(fs.existsSync(path.join(__dirname,c.portrait)));
+  assert.equal(p.fakeRate,PAWN_EXTRA_GUESTS[i-24].supply[0]);assert.equal(p.rareBoost,PAWN_EXTRA_GUESTS[i-24].supply[1]);
+  assert(p.likes.length===2);assert.notEqual(PawnVoice.say(i,'taste'),PawnVoice.say(1,'taste'));
+  for(const key of [...PawnVoice.keys,'originCaught','originDefend','discount','praise','thanks','noPraise','tea'])assert(PawnTradeVoice.say(i,key,{item:'달빛 반지',price:123,detail:'빛이 양갈래로 퍼진다.'}).length>5);
+ }
 });
 
 const stats={visits:0,sellers:0,buyers:0,fakes:0,unaware:0,fraud:0,genuineFraud:0,jackpots:0,grades:new Set()};

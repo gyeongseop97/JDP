@@ -1,6 +1,6 @@
-# v6.2 업데이트 안내
+# v6.3 업데이트 안내
 
-UPDATE-v6.2.md를 먼저 읽고 압축 안의 모든 파일을 기존 위치에 덮어쓰세요. origin-data.js, legacy-item-appraisals.js, item-appraisals.js, trade-voice.js, night-ui.js, night.css, appraisal.css를 포함해야 합니다. 아래는 최초 게시 절차입니다.
+UPDATE-v6.3.md를 먼저 읽고 압축 안의 모든 파일을 기존 위치에 덮어쓰세요. origin-data.js, legacy-item-appraisals.js, item-appraisals.js, trade-voice.js, night-ui.js, night.css, appraisal.css를 포함해야 합니다. 아래는 최초 게시 절차입니다.
 
 # GitHub에 게임 업데이트하기
 
@@ -11,6 +11,8 @@ UPDATE-v6.2.md를 먼저 읽고 압축 안의 모든 파일을 기존 위치에 
 5. GitHub 게시가 끝나면 [수상한 전당포](https://gyeongseop97.github.io/JDP/)를 새로고침합니다.
 
 이미 Pages를 사용 중이면 설정은 그대로 두세요. 새로 시작 버튼을 누르거나 브라우저 데이터를 지울 필요도 없습니다. 기존 진행은 **불러오기**로 불러옵니다.
+
+새 파일 guest-data.js, guest-leon.png, guest-serin.png도 반드시 함께 올리세요.
 
 ## 빠뜨리기 쉬운 파일
 

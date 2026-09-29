@@ -571,6 +571,7 @@ const storyReplies=[
 '사연은 기록해 두겠습니다. 지금 남은 특징과 함께 소장할지 판단하죠.'
 ];
 rows.forEach((row,index)=>{row[keys.indexOf('claim')]=directClaims[index];row[keys.indexOf('story')]=storyReplies[index];});
+for(const guest of G.PAWN_EXTRA_GUESTS||[])rows.push(keys.map(key=>guest.voice[key]));
 const voices=rows.map((row,index)=>{if(row.length!==keys.length)throw new Error('Voice '+index+' has '+row.length+' fields');return Object.freeze(Object.fromEntries(keys.map((key,i)=>[key,row[i]])));});
 const aliases={mistaken:'corrected',smalltalk:'rapport'};
 function clean(value,fallback=''){if(value==null)return fallback;return String(value).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').trim()||fallback;}
