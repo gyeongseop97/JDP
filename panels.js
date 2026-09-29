@@ -68,16 +68,17 @@
       appraisal: [
         '옅게 남은 각인과 반사를 읽습니다. 흐릿했던 곳은 강화 후 다시 살펴보세요.',
         '더 미세한 선과 약한 반사를 읽습니다. 관찰 결과를 수첩의 기준과 직접 비교하세요.',
-        '새 방문부터 조사가 3회가 됩니다. 겹친 흔적과 희미한 마감 차이도 더 읽습니다.',
+        '겹친 흔적과 희미한 마감 차이도 더 읽습니다. 조사 횟수는 조사 작업대에서 늘립니다.',
         '아주 흐린 표식과 반사도 더 자세히 읽습니다. 손님의 주장과 맞는지는 직접 확인하세요.',
         '가장 흐릿한 흔적까지 읽는 최고 단계입니다. 흔적의 의미와 거래할 가격은 직접 판단하세요.'
       ],
+      inspection: Array.from({ length: 4 }, (_, i) => '방문당 조사 ' + (2+i) + '회 → ' + (3+i) + '회. 진행 중인 거래에도 1회가 추가됩니다. 이미 쓴 횟수와 관찰 기록은 유지됩니다.'),
       shelves: Array.from({ length: 5 }, (_, i) => '보관함 ' + (12 + i * 4) + '칸, 위탁 판매 ' + (4 + i) + '칸으로 넓힙니다.'),
       word: Array.from({ length: 5 }, (_, i) => '판매가 ' + Math.round((i + 1) * 3.5) + '% 보너스. 흥정과 희귀 물품 발견에도 유리해집니다.')
     };
-    $('upgrades-list').innerHTML = [['appraisal', '⌕', '감정사의 안목'], ['shelves', '▣', '진열장 확장'], ['word', '✦', '골목의 명성']].map(([key, icon, title]) => {
-      const lv = s.upgrades[key], cost = E.UPGRADE_COSTS[lv];
-      return '<article class="upgrade-card"><span aria-hidden="true">' + icon + '</span><h3>' + title + '</h3><p>' + (lv < 5 ? desc[key][lv] : '이 분야의 최고 수준에 도달했습니다.') + '</p><small>' + (lv < 5 ? 'LEVEL ' + lv + ' → ' + (lv + 1) : 'MASTERED') + '</small><button class="btn primary" data-action="upgrade" data-key="' + key + '" ' + (lv >= 5 || s.coins < cost ? 'disabled' : '') + '>' + (lv < 5 ? fmt(cost) + 'G 강화' : '완성') + '</button></article>';
+    $('upgrades-list').innerHTML = [['inspection', '⊞', '조사 작업대'], ['appraisal', '⌕', '감정사의 안목'], ['shelves', '▣', '진열장 확장'], ['word', '✦', '골목의 명성']].map(([key, icon, title]) => {
+      const lv = s.upgrades[key], cost = E.upgradeCost(s,key), max = E.upgradeLimit(key);
+      return '<article class="upgrade-card"><span aria-hidden="true">' + icon + '</span><h3>' + title + '</h3><p>' + (lv < max ? desc[key][lv] : (key === 'inspection' ? '방문당 조사 6회. 모든 부위를 살펴볼 수 있습니다. 재조사도 남은 횟수를 사용합니다.' : '이 분야의 최고 수준에 도달했습니다.')) + '</p><small>' + (lv < max ? 'LEVEL ' + lv + ' → ' + (lv + 1) : 'MASTERED') + '</small><button class="btn primary" data-action="upgrade" data-key="' + key + '" ' + (lv >= max || s.coins < cost ? 'disabled' : '') + '>' + (lv < max ? fmt(cost) + 'G 강화' : '완성') + '</button></article>';
     }).join('');
     $('achievements-count').textContent = s.claimed.length + ' / ' + E.ACHIEVEMENTS.length;
     $('achievements').innerHTML = E.ACHIEVEMENTS.map(a => {
