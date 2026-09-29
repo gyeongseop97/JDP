@@ -1,0 +1,200 @@
+{
+  "version": 5,
+  "seed": 3273804290,
+  "coins": 4321,
+  "day": 1,
+  "visitor": 1,
+  "turn": 0,
+  "serial": 1,
+  "xp": 0,
+  "bought": 0,
+  "sold": 0,
+  "profit": 0,
+  "rare": 0,
+  "legend": 0,
+  "stock": [],
+  "discovered": {},
+  "met": {
+    "22": 1
+  },
+  "relationships": {},
+  "claimed": [],
+  "upgrades": {
+    "appraisal": 0,
+    "shelves": 0,
+    "word": 0
+  },
+  "log": [
+    {
+      "day": 1,
+      "text": "오래된 열쇠를 받았다. 오늘부터 이 가게의 주인이다.",
+      "type": "normal"
+    }
+  ],
+  "notices": [],
+  "current": {
+    "uid": "lot-1",
+    "itemId": "clock-01",
+    "character": 22,
+    "kind": "seller",
+    "grade": 2,
+    "claimedGrade": 2,
+    "condition": 4,
+    "genuine": true,
+    "sleeper": false,
+    "apparent": 666,
+    "value": 666,
+    "estimate": 610,
+    "asking": 678,
+    "price": 678,
+    "baseFloor": 549,
+    "floor": 549,
+    "paid": 0,
+    "sale": 0,
+    "attempts": 0,
+    "status": "offered",
+    "wasFirst": false,
+    "line": "백야의 수정 핀 가져왔어! 먼지는 털었으니 속까지 잘 보고 값을 불러 줘!",
+    "negotiated": false,
+    "history": [
+      {
+        "speaker": "customer",
+        "text": "백야의 수정 핀 가져왔어! 먼지는 털었으니 속까지 잘 보고 값을 불러 줘!"
+      },
+      {
+        "speaker": "customer",
+        "text": "내가 봤을 때는 이랬어! “안쪽에 꽃잎 네 장이 보여요. 가운데는 점이 아니라 작은 빈 원이고요.” 그걸 보고 값을 생각한 거야!"
+      },
+      {
+        "speaker": "player",
+        "text": "바닥의 작은 표식은 어떤 모양인가요?"
+      },
+      {
+        "speaker": "customer",
+        "text": "내가 봤을 때는 이랬어! “바닥을 보면 작은 초승달이 있어요. 그 안에 짧은 선이 세 개고, 달 밖으로 튀어나온 선은 없어요.” 그걸 보고 값을 생각한 거야!"
+      },
+      {
+        "speaker": "player",
+        "text": "돋보기 · 바닥의 제작 표식"
+      },
+      {
+        "speaker": "note",
+        "text": "초승달 안쪽에 짧은 홈 세 개가 보인다. 세 홈의 끝은 모두 달의 테두리 안에서 멈춘다."
+      }
+    ],
+    "notes": [
+      "초승달 안쪽에 짧은 홈 세 개가 보인다. 세 홈의 끝은 모두 달의 테두리 안에서 멈춘다."
+    ],
+    "talkLeft": 0,
+    "patience": 4,
+    "mood": 0,
+    "relationDelta": 0,
+    "talked": [
+      "authenticity"
+    ],
+    "physicalUsed": true,
+    "suspicion": 0,
+    "acceptedOffer": false,
+    "offerRelationApplied": false,
+    "lastOffer": null,
+    "leverage": 0,
+    "checks": [
+      "lens-mark"
+    ],
+    "clues": {},
+    "lastCheck": null,
+    "verdict": "",
+    "feedback": "내가 봤을 때는 이랬어! “바닥을 보면 작은 초승달이 있어요. 그 안에 짧은 선이 세 개고, 달 밖으로 튀어나온 선은 없어요.” 그걸 보고 값을 생각한 거야!",
+    "intentionRoll": 0.8375503679271787,
+    "intent": "honest",
+    "evidence": {
+      "physical": 0.7622419600374997,
+      "axes": {
+        "authenticity": {
+          "key": "authenticity",
+          "tool": "lens",
+          "site": "mark",
+          "reference": "이 계열의 원제작소는 초승달 안에 짧은 선 세 개를 새겼다. 선 끝은 모두 달의 안쪽에서 멈춘다. 흔한 복제품은 선이 두 개이거나 달 바깥까지 이어진다. 닳은 표식만으로는 구별하기 어렵다.",
+          "claim": "바닥을 보면 작은 초승달이 있어요. 그 안에 짧은 선이 세 개고, 달 밖으로 튀어나온 선은 없어요.",
+          "actual": 1,
+          "claimed": 1,
+          "full": "초승달 안쪽에 짧은 홈 세 개가 보인다. 세 홈의 끝은 모두 달의 테두리 안에서 멈춘다.",
+          "unclear": "초승달 테두리의 일부가 닳았다. 안쪽 홈 두 개는 보이지만, 세 번째가 있었을 자리는 깊은 긁힘에 가려져 있다.",
+          "requiredLevel": 0,
+          "observedActual": true
+        },
+        "quality": {
+          "key": "quality",
+          "tool": "light",
+          "site": "material",
+          "reference": "빛을 비스듬히 비추어 반사 띠를 비교한다. 거친 마감은 띠가 톱니처럼 끊기고, 보통 마감은 넓은 면에서만 고르다. 정교한 마감은 굽은 곳에서도 가는 반사 띠가 이어진다. 이것은 제작 솜씨이며 진위를 보증하지 않는다.",
+          "claim": "넓은 면은 빛이 고르게 돌아요. 다만 굽은 테두리에서는 반짝임이 조금 갈라져요.",
+          "actual": 1,
+          "claimed": 1,
+          "full": "넓은 면의 반사 띠는 고르다. 굽은 테두리에 닿자 띠가 두세 갈래로 흐트러진다.",
+          "unclear": "",
+          "requiredLevel": 0,
+          "observedActual": false
+        },
+        "condition": {
+          "key": "condition",
+          "tool": "lens",
+          "site": "wear",
+          "reference": "아래쪽 테두리와 가장자리의 틈, 패임, 수리 흔적을 확인한다. 깊게 벌어진 틈은 손상, 얕은 생활 흠집은 가벼운 사용 흔적이다. 모서리가 온전해도 정교하게 만든 물건인지는 별도로 살핀다.",
+          "claim": "아래쪽 테두리와 모서리는 손상 없이 보관했어요. 패인 자리나 벌어진 틈도 없어요.",
+          "actual": 2,
+          "claimed": 2,
+          "full": "아래쪽 테두리의 윤곽이 온전하다. 모서리에 패임이나 틈, 덧붙인 접착물은 보이지 않는다.",
+          "unclear": "",
+          "requiredLevel": 0,
+          "observedActual": false
+        }
+      }
+    },
+    "rewarded": {},
+    "inspectionLeft": 5,
+    "inspected": [
+      "lens-mark"
+    ],
+    "inspectionResults": {
+      "lens-mark": "초승달 안쪽에 짧은 홈 세 개가 보인다. 세 홈의 끝은 모두 달의 테두리 안에서 멈춘다."
+    },
+    "inspectionLevels": {
+      "lens-mark": 0
+    },
+    "lastInspection": "lens-mark",
+    "appraisalClarity": 0,
+    "investigationVersion": 2,
+    "investigations": {
+      "lens-mark": "초승달 안쪽에 짧은 홈 세 개가 보인다. 세 홈의 끝은 모두 달의 테두리 안에서 멈춘다.",
+      "lens-material": "몸체의 마감면의 윤곽은 보인다. 색 변화와 빛의 반사 양상은 확대만으로 확인되지 않는다.",
+      "lens-wear": "아래쪽 테두리의 윤곽이 온전하다. 모서리에 패임이나 틈, 덧붙인 접착물은 보이지 않는다.",
+      "light-mark": "바닥의 제작 표식에 밝은 부분과 그림자가 생긴다. 작은 홈이나 미세한 선까지는 맨눈으로 읽히지 않는다.",
+      "light-material": "넓은 면의 반사 띠는 고르다. 굽은 테두리에 닿자 띠가 두세 갈래로 흐트러진다.",
+      "light-wear": "아래쪽 테두리와 가장자리에 밝은 부분과 그림자가 생긴다. 작은 홈이나 미세한 선까지는 맨눈으로 읽히지 않는다."
+    }
+  },
+  "closing": false,
+  "dayStart": 650,
+  "dayBought": 0,
+  "dayProfit": 0,
+  "eventDone": false,
+  "aidDay": 0,
+  "sound": false,
+  "activeEvent": {
+    "id": "e03",
+    "title": "유리의 잊어버린 현관",
+    "description": "유리가 고향을 떠올릴 유물을 찾습니다. 유물 1점을 전달하면 감사금 150G를 받습니다.",
+    "kind": "request",
+    "category": "relic",
+    "mult": 1.25,
+    "gift": 150,
+    "character": 2,
+    "requestText": "어떤 유물이든 좋아요. 오래된 물건은 집 냄새를 기억하거든요.",
+    "resolveText": "“빨간 문이었어요.” 유리가 처음으로 집의 색을 떠올렸습니다.",
+    "day": 1
+  },
+  "lastEventId": "e03",
+  "lastCharacter": 22,
+  "lastItemId": "jewelry-10"
+}

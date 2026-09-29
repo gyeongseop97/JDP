@@ -6,7 +6,7 @@
   function stock() {
     const s = A.state;
     const help = document.querySelector('#view-stock .section-heading p');
-    if (help) help.textContent = '보관 중인 물건은 사러 온 손님과 직접 흥정할 수 있어요. 도매·위탁 판매도 가능합니다.';
+    if (help) help.textContent = '진품을 밤까지 보관하면 테마 도록에 등록할 수 있어요. 손질하거나 구매 손님에게 판매할 수도 있습니다.';
     for (const b of document.querySelectorAll('[data-stock-filter]')) {
       b.classList.toggle('active', b.dataset.stockFilter === A.stockFilter);
       if (b.dataset.stockFilter === 'display') b.textContent = '위탁 중';
@@ -27,7 +27,7 @@
           '<button class="btn secondary" data-action="display-sale" data-uid="' + esc(lot.uid) + '"' + disabled + '>위탁 판매 ' + fmt(display) + 'G</button></div>';
       return '<article class="stock-card"><div class="stock-card-top">' + art(lot.itemId, lot.grade) + '<div><h3>' + esc(it.name) + '</h3>' + badge(lot.grade) +
         (lot.genuine ? ' <span class="auth-tag">진품</span>' : ' <span class="fake-tag">가품</span>') + '</div></div>' +
-        '<div class="stock-meta"><span>매입 ' + fmt(lot.paid) + 'G</span><b>이 물건의 가치 ' + fmt(lot.value) + 'G</b></div>' + saleControls +
+        (lot.genuine&&!s.album[lot.itemId]?'<p class="album-eligible">✦ 밤에 도록 등록 가능 · 등록 전에 팔면 기회를 놓쳐요</p>':'')+'<div class="stock-meta"><span>원가 ' + fmt(lot.paid) + 'G</span><b>이 물건의 가치 ' + fmt(lot.value) + 'G</b></div>' + saleControls +
         (eligible ? '<button class="request-deliver" data-action="deliver" data-uid="' + esc(lot.uid) + '"' + disabled + '>의뢰 전달 · ' + fmt(Math.round(lot.value * (ev.mult || 1.4)) + (ev.gift || 0)) + 'G</button>' : '') +
         '<button class="card-detail" data-action="item-detail" data-id="' + it.id + '">물건의 이야기 보기</button></article>';
     }).join('') : '<div class="empty"><strong>다음 손님이 탐낼 물건은 무엇일까요?</strong>매입한 물건을 보관하면 사러 오는 손님을 만날 수 있어요.<br>직접 대화하고 가격을 제안하거나 도매·위탁으로 판매하세요.<br>발견한 물건은 팔아도 수집록에 남아요.<br><button class="btn primary" data-action="go-trade">손님 만나러 가기</button></div>';
@@ -57,7 +57,7 @@
     const list = PAWN_ITEMS.filter(x => A.category === 'all' || x.category === A.category);
     $('codex-grid').innerHTML = list.map(it => {
       const found = s.discovered[it.id];
-      return '<button class="codex-card ' + (found ? '' : 'locked') + '" data-action="item-detail" data-id="' + it.id + '" ' + (!found ? 'disabled' : '') + ' style="--grade:' + (found ? E.GRADES[found.grade][1] : '#716b7c') + '">' + art(it.id, found?.grade || 1, '', !found) + '<strong>' + esc(found ? it.name : '미발견') + '</strong><small>' + esc(found ? '최고 기록 · ' + E.GRADES[found.grade][0] : E.CATEGORIES[it.category]) + '</small></button>';
+      return '<button class="codex-card ' + (found ? '' : 'locked') + '" data-action="item-detail" data-id="' + it.id + '" ' + (!found ? 'disabled' : '') + ' style="--grade:' + (found ? E.GRADES[found.grade][1] : '#716b7c') + '">' + art(it.id, found?.grade || 1, '', !found) + '<strong>' + esc(found ? it.name : '미발견') + '</strong><small>' + esc(found ? (s.album[it.id]?'✦ 도록 등록 · ':'최고 기록 · ') + E.GRADES[found.grade][0] : E.CATEGORIES[it.category]) + '</small></button>';
     }).join('');
   }
 
@@ -68,7 +68,7 @@
       appraisal: [
         '옅게 남은 각인과 반사를 읽습니다. 흐릿했던 곳은 강화 후 다시 살펴보세요.',
         '더 미세한 선과 약한 반사를 읽습니다. 관찰 결과를 수첩의 기준과 직접 비교하세요.',
-        '겹친 흔적과 희미한 마감 차이를 구별합니다. 진위·세공·보존은 각각 판단하세요.',
+        '새 방문부터 조사가 3회가 됩니다. 겹친 흔적과 희미한 마감 차이도 더 읽습니다.',
         '아주 흐린 표식과 반사도 더 자세히 읽습니다. 손님의 주장과 맞는지는 직접 확인하세요.',
         '가장 흐릿한 흔적까지 읽는 최고 단계입니다. 흔적의 의미와 거래할 가격은 직접 판단하세요.'
       ],

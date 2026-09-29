@@ -1,10 +1,10 @@
 'use strict';
 (() => {
-const E=PawnEngine,$=id=>document.getElementById(id),KEY='midnight-pawn-v5';
+const E=PawnEngine,$=id=>document.getElementById(id),KEY='midnight-pawn-v6';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>Math.round(Number(x)||0).toLocaleString('ko-KR');
 let s,view='trade',stockFilter='all',codexMode='items',category='all',timer,audio,saveOK=true,offerKey='',mode='menu',hasSave=false,investigationTool='lens',inspectionFocus='',inspectionVisit='';
-for(const key of [KEY,KEY+'-backup','midnight-pawn-v4','midnight-pawn-v4-backup','midnight-pawn-v3','midnight-pawn-v3-backup']){
+for(const key of [KEY,KEY+'-backup','midnight-pawn-v5','midnight-pawn-v5-backup','midnight-pawn-v4','midnight-pawn-v4-backup','midnight-pawn-v3','midnight-pawn-v3-backup']){
   try{const candidate=JSON.parse(localStorage.getItem(key)||'null');if(E.validate(candidate)){s=E.prepare(candidate);hasSave=true;break}}catch{}
 }
 if(!s)s=E.prepare(E.create());
@@ -42,7 +42,7 @@ function renderDialogue(o){
   const history=o.history||[],latest=history.filter(h=>h.speaker==='customer').at(-1),active=!s.closing&&o.status==='offered';
   $('customer-line').textContent=latest?.text||o.feedback||o.line||PAWN_CHARACTERS[o.character].greeting;
   $('history-count').textContent=history.length;
-  $('talk-count').textContent='질문·조사 자유';
+  $('talk-count').textContent='질문 '+o.talkLeft+'/'+o.questionMax+' · 조사 '+o.inspectionLeft+'/'+o.inspectionMax;
   $('talk-count').hidden=!active;
   $('patience-label').textContent=!active?(s.closing?'오늘의 영업을 마쳤어요':o.status==='left'?'손님이 자리를 떠났어요':'거래를 마쳤어요'):o.patience<=1?'협상 여유가 거의 없어요':o.mood<-10?'기분이 상했어요':o.mood>10?'호의적인 반응':'이야기를 듣고 있어요';
   const options=active?(E.dialogueOptions(s)||[]):[];
@@ -51,18 +51,32 @@ function renderDialogue(o){
   if($('conversation-dialog').open)renderHistory(o);
 
   const investigations=E.investigationOptions(s),used=new Set(o.inspected||[]);
-  $('inspection-count').textContent='비용·횟수 제한 없음';
+  $('inspection-count').textContent='남은 조사 '+o.inspectionLeft+' / '+o.inspectionMax;
   $('investigation-panel').hidden=o.kind==='buyer';
   $('evidence-book').hidden=o.kind==='buyer';
   if(inspectionVisit!==o.uid){inspectionFocus=o.lastInspection||'';inspectionVisit=o.uid}
-  $('investigation-options').innerHTML='<div class="investigation-tools"><button type="button" data-tool="lens" aria-pressed="'+(investigationTool==='lens')+'" class="'+(investigationTool==='lens'?'selected':'')+'">⌕ 돋보기</button><button type="button" data-tool="light" aria-pressed="'+(investigationTool==='light')+'" class="'+(investigationTool==='light'?'selected':'')+'">☼ 불빛 비추기</button></div><p class="tool-purpose">'+(investigationTool==='lens'?'작은 표식, 가는 선, 표면의 틈을 확대합니다.':'빛깔의 변화, 반사 무늬, 투과하는 빛을 봅니다.')+'</p><div class="investigation-workbench">'+art(o.itemId,1,'inspection-art')+'<span>어느 부위를 확인할까요?</span></div><div class="investigation-targets">'+investigations.filter(x=>x.tool===investigationTool).map(x=>'<button class="investigation-choice" data-investigate="'+esc(x.id)+'"><strong>'+esc(x.label)+'</strong><small>'+esc(used.has(x.id)?'다시 보기':x.hint)+'</small></button>').join('')+'</div>';
+  $('investigation-options').innerHTML='<div class="investigation-tools"><button type="button" data-tool="lens" aria-pressed="'+(investigationTool==='lens')+'" class="'+(investigationTool==='lens'?'selected':'')+'">⌕ 돋보기</button><button type="button" data-tool="light" aria-pressed="'+(investigationTool==='light')+'" class="'+(investigationTool==='light'?'selected':'')+'">☼ 불빛 비추기</button></div><p class="tool-purpose">'+(investigationTool==='lens'?'작은 표식, 가는 선, 표면의 틈을 확대합니다.':'빛깔의 변화, 반사 무늬, 투과하는 빛을 봅니다.')+'</p><div class="investigation-workbench">'+art(o.itemId,1,'inspection-art')+'<span>어느 부위를 확인할까요?</span></div><div class="investigation-targets">'+investigations.filter(x=>x.tool===investigationTool).map(x=>'<button class="investigation-choice" data-investigate="'+esc(x.id)+'" '+(o.inspectionLeft<=0&&!used.has(x.id)?'disabled':'')+'><strong>'+esc(x.label)+'</strong><small>'+esc(used.has(x.id)?'다시 보기':x.hint)+'</small></button>').join('')+'</div>';
   const observed=o.inspectionResults?.[inspectionFocus],opt=investigations.find(x=>x.id===inspectionFocus);
   $('appraisal-observation').innerHTML=observed?'<span class="eyebrow">직접 본 흔적 · '+esc(opt?.label||'조사 기록')+'</span><p>'+esc(observed)+'</p>':'<p>손님의 말에서 확인할 특징을 골라 도구와 부위를 선택하세요. 관찰 결과는 여기에 남습니다.</p>';
-  const cards=E.appraisalNotebook(s);
+
+  const cards=E.appraisalNotebook(s),impact=o.lastImpact;
+  $('trade-impact').hidden=!impact;
+  if(impact)$('trade-impact').innerHTML='<strong>'+fmt(impact.before)+'G → '+fmt(impact.after)+'G</strong><span>호감도 '+(impact.relationDelta>0?'+':'')+(impact.relationDelta||0)+'</span><p>'+esc(impact.reason)+'</p>';
+  const actions=c=>c.observation?'<div class="evidence-actions"><button data-present="'+c.key+'" data-kind="defect" '+(o.evidenceUsed?.[c.key]||o.acceptedOffer?'disabled':'')+'>흠으로 제시 · 가격 낮추기</button><button data-present="'+c.key+'" data-kind="praise" '+(o.evidenceUsed?.[c.key]||o.acceptedOffer?'disabled':'')+'>장점 공개 · 신뢰 얻기</button></div>':'';
+  const focus=cards.find(c=>c.observation===observed);
+  if(focus)$('appraisal-observation').innerHTML+='<details class="observation-reference" open><summary>이 흔적으로 무엇을 판단할까?</summary><p>'+esc(focus.reference)+'</p></details><button class="btn secondary wide" data-action="judge-jump">내 판단과 예상 손익 기록하기 ↓</button>'+actions(focus);
   $('evidence-count').textContent=cards.filter(c=>c.observation).length+' / 3';
-  $('appraisal-notes').innerHTML=cards.map(c=>'<article class="comparison-card"><h4>'+esc(c.title)+'</h4><dl><dt>손님의 말</dt><dd>'+esc(c.claim||'아직 이 특징을 물어보지 않았습니다.')+'</dd><dt>내가 본 흔적</dt><dd>'+esc(c.observation||'아직 이 특징의 관찰 기록이 없습니다.')+'</dd></dl><details><summary>수첩의 비교 기준</summary><p>'+esc(c.reference)+'</p></details></article>').join('');
+  $('appraisal-notes').innerHTML=cards.map(c=>'<article class="comparison-card"><h4>'+esc(c.title)+'</h4><dl><dt>손님의 말 · 사실 확인 전</dt><dd>'+esc(c.claim||'아직 묻지 않았습니다.')+'</dd><dt>내가 본 흔적</dt><dd>'+esc(c.observation||'아직 조사하지 않았습니다.')+'</dd></dl><details><summary>비교 기준 다시 읽기</summary><p>'+esc(c.reference)+'</p></details>'+actions(c)+'</article>').join('');
+  renderJudgment(o);
+
 
 }
+
+function renderJudgment(o){const hidden=o.kind!=='seller';$('deal-plan').hidden=hidden;$('judgment-panel').hidden=hidden;if(hidden)return;const v=E.valuation(s),j=o.judgment||{},names={authenticity:'진위',quality:'제작 수준',condition:'보존 상태'},choices={authenticity:['모조품 같다','진품 같다'],quality:['거친 제작','보통 제작','정교한 제작'],condition:['손상 있음','사용 흔적','온전한 보존']};
+ $('deal-plan').innerHTML='<div class="eyebrow">'+esc(E.goals(s).find(g=>g.id===s.ambition).name)+'</div><strong>'+esc(s.ambition==='collection'?(s.album[o.itemId]?'이미 도록에 있는 품목':'도록에 없는 품목 · 진품이면 보관할 가치가 있어요'):s.ambition==='friends'?'가격과 함께 손님의 만족도도 살피세요':'예상 매각가보다 싸게 살 기회를 찾으세요')+'</strong><p>'+esc(E.goals(s).find(g=>g.id===s.ambition).tip)+'</p><button class="btn secondary" data-action="goals">돈·수집·단골 목표 바꾸기</button><div class="market-anchor">'+esc(E.item(o.itemId).name)+'<br><span>평범한 진품 · 좋은 상태의 도매 기준</span><b>'+fmt(v.ordinary)+'G</b></div><small>지금 물건의 가격표가 아닙니다. 진위·제작·손상을 보고 달리 판단하세요.</small>';
+ $('judgment-panel').innerHTML='<div class="eyebrow">사장인 내가 내리는 판단</div><h3>이 값에 사도 남을까?</h3><p class="quiet-note">정답을 확인하는 버튼이 아닙니다. 관찰과 수첩을 보고 직접 선택하세요.</p>'+Object.keys(names).map(k=>'<fieldset class="judgment-axis"><legend>'+names[k]+'</legend><div>'+choices[k].map((label,i)=>'<button data-judge-key="'+k+'" data-judge-value="'+i+'" aria-pressed="'+(j[k]===i)+'" class="'+(j[k]===i?'selected':'')+'">'+label+'</button>').join('')+'<button data-judge-key="'+k+'" data-judge-value="?" aria-pressed="'+(j[k]===null)+'" class="'+(j[k]===null?'selected':'')+'">아직 모름</button></div></fieldset>').join('')+'<div class="valuation-result"><span>내 가정대로라면 · 도매 매각 예상</span><strong>'+fmt(v.min)+' ~ '+fmt(v.max)+'G</strong><span>현재 요구가 '+fmt(o.price)+'G에 매입할 경우</span><b>예상 손익 '+(v.profitMin>=0?'+':'')+fmt(v.profitMin)+' ~ '+(v.profitMax>=0?'+':'')+fmt(v.profitMax)+'G</b><p>'+(!v.complete?'모르는 항목이 있어 범위가 넓습니다. 남은 조사로 확인할지, 위험을 감수할지 고르세요.':'선택한 판단이 틀리면 실제 결과는 이 범위를 벗어날 수 있습니다.')+'</p></div><p class="quiet-note">흠은 가격 인하의 근거로 쓰세요. 숨은 장점은 알리지 않고 매입할 수도 있습니다.</p>';
+}
+
 function renderBuyerStock(o){$('buyer-selection').hidden=o.kind!=='buyer';if(o.kind!=='buyer')return;const p=E.profile(o.character);$('buyer-request').textContent=p.interest;const lots=s.stock.filter(l=>l.displayAt===null);$('buyer-stock-options').innerHTML=lots.map(l=>{const it=E.item(l.itemId),preferred=p.likes?.includes(it.category);return '<button class="buyer-lot '+(o.stockUid===l.uid?'selected':'')+'" data-stock-choice="'+esc(l.uid)+'" aria-pressed="'+(o.stockUid===l.uid)+'">'+art(l.itemId,l.grade)+'<span><strong>'+esc(it.name)+'</strong><small>'+esc(E.GRADES[l.grade][0])+' · '+(l.genuine?'진품':'모조품')+(preferred?' · 좋아하는 품목':'')+'</small></span></button>'}).join('')||'<p>판매할 물건이 없어요. 다음 손님을 맞이해 주세요.</p>'}
 function renderOffer(o){
   renderBuyerStock(o);
@@ -75,7 +89,7 @@ function renderOffer(o){
   $('buy-button').textContent=fmt(o.price)+'G에 '+(o.kind==='buyer'?'판매':'매입');
   $('buy-button').disabled=o.kind==='seller'&&(s.coins<o.price||s.stock.length>=E.capacity(s));
   $('pass-button').textContent='거래 거절';
-  $('trade-help').textContent=o.kind==='buyer'?'소개하는 방식과 손님의 취향이 가격에 영향을 줍니다.':s.coins<o.price?'소지금이 부족해요. 더 낮게 제안하거나 보관함을 확인하세요.':'같은 보물에도 진품과 가품이 있습니다. 이번 손님의 말을 판단하세요.';
+  $('trade-help').textContent=o.kind==='buyer'?'소개하는 방식과 손님의 취향이 가격에 영향을 줍니다.':s.coins<o.price?'소지금이 부족해요. 더 낮게 제안하거나 보관함을 확인하세요.':'같은 보물에도 진품과 가품이 있습니다. 내 예상 매각가보다 싸게 살 수 있을지 판단하세요.';
 }
 function renderResult(o,it){
   if(o.status==='left'){$('reveal-view').innerHTML='<div class="reveal departed"><div class="eyebrow">THIS DEAL ENDS HERE</div><h3>손님이 거래를 접었습니다</h3><p>'+esc(o.feedback||'이번에는 합의하지 못했습니다.')+'</p><div class="outcome-note">현재 관계 · '+esc(E.relationLabel(relationship(o.character)))+' '+relationship(o.character)+'</div><button class="btn primary wide" data-action="next">다음 손님 맞이하기</button></div>';return}
@@ -87,6 +101,7 @@ function renderResult(o,it){
   const verdict=o.verdict||(o.kind==='buyer'?'손님의 반응이 다음 방문에도 이어집니다.':!o.genuine?(o.intent==='fraud'?'판매자는 위조품이라는 사실을 알고 있었습니다.':'손님도 진품으로 믿었던 모조품입니다.'):it.effect);
   $('reveal-view').innerHTML='<div class="reveal" style="--grade:'+E.GRADES[o.grade][1]+'"><div class="eyebrow">'+(sold?'거래를 마쳤습니다':!o.genuine?'매입 후 드러난 진실':o.value>o.paid*3?'숨은 보물을 발견했습니다':'거래 뒤의 감정 기록')+'</div>'+badge(o.grade,(o.genuine?'진품':'모조품')+' · '+E.GRADES[o.grade][0])+'<div class="reveal-art">'+art(it.id,o.grade)+'</div><h3>'+esc(it.name)+'</h3><p class="verdict">'+esc(verdict)+'</p><div class="value-reveal"><small>'+(sold?'판매 완료':'실제 가치')+'</small>'+fmt(sold?o.sale:o.value)+' G</div><span class="profit-label '+(profit<0?'loss':'')+'">'+(sold?'실현 이익 ':'지금 도매 판매 시 ')+(profit>=0?'+':'')+fmt(profit)+'G</span><div class="outcome-note">'+esc(PAWN_CHARACTERS[o.character].name)+' · '+esc(E.relationLabel(relationship(o.character)))+' '+(relationship(o.character)>0?'+':'')+relationship(o.character)+(Number.isFinite(o.relationDelta)?' <span>이번 만남 '+(o.relationDelta>0?'+':'')+o.relationDelta+'</span>':'')+'</div><div class="reveal-buttons">'+buttons+'</div></div>';
 
+  if(o.purchasePrediction)$('reveal-view').innerHTML+='<div class="trade-impact"><strong>내 예상 '+fmt(o.purchasePrediction.min)+' ~ '+fmt(o.purchasePrediction.max)+'G</strong><p>매입 때 선택한 가정으로 계산한 도매 매각 범위입니다. 위의 실제 가치와 판매 금액을 비교해 판단을 돌아보세요.</p></div>';
   const review=E.appraisalReview(s);
   if(review.length)$('reveal-view').innerHTML+='<details class="appraisal-review" open><summary>감정 풀이 · 이번 물건에서 볼 수 있던 것</summary>'+review.map(c=>'<article><h4>'+esc(c.title)+' — '+esc(c.result)+'</h4><p>'+esc(c.observation)+'</p><p class="review-note">'+(c.seen?'거래 전에 확인한 흔적입니다.':'거래 전에 끝까지 확인하지 않은 흔적입니다.')+' '+esc(c.explanation)+'</p></article>').join('')+'</details>';
 }
@@ -103,22 +118,23 @@ function render(){
   if(s.closing){$('closing-view').innerHTML='<div class="closing"><div class="eyebrow">THE END OF A NIGHT</div><h3>'+s.day+'번째 밤, 마감</h3><p>다음 밤에는 다른 손님과 새로운 사건이 찾아옵니다.</p><dl><dt>오늘 매입</dt><dd>'+s.dayBought+'개</dd><dt>오늘 실현 이익</dt><dd>'+(s.dayProfit>=0?'+':'')+fmt(s.dayProfit)+'G</dd><dt>마감 보너스</dt><dd>+'+(70+s.day*15)+'G</dd></dl><button class="btn primary" data-action="next-day">정산하고 다음 밤으로</button></div>'}
   else if(o.status==='offered')renderOffer(o);else renderResult(o,it);
   const display=s.stock.filter(x=>x.displayAt!==null);$('shelf-preview').innerHTML='<div><b>구매 손님을 기다리는 물건</b>보관 중 '+s.stock.filter(x=>x.displayAt===null).length+'개 · 위탁 '+display.length+'개</div>'+s.stock.filter(x=>x.displayAt===null).slice(0,3).map(x=>art(x.itemId,x.grade)).join('')+'<button data-action="stock">보관함 ＋</button>';
-  if(view!=='trade'&&window.PawnPanels)PawnPanels.render(view);paintItems();paintPeople();fitControls();
+  if(view!=='trade'&&window.PawnPanels)PawnPanels.render(view);if(window.PawnNight)PawnNight.render();paintItems();paintPeople();fitControls();
 }
 function openDialog(html){$('dialog-body').innerHTML=html;if(!$('detail-dialog').open)$('detail-dialog').showModal();paintItems();paintPeople()}
-function customerInfo(index=s.current.character){const c=PAWN_CHARACTERS[index],p=E.profile(index),met=s.met[index]||0,v=relationship(index);openDialog(portrait(index,'person-art')+'<div class="eyebrow">'+esc(c.role)+'</div><h2 style="color:'+c.color+'">'+esc(c.name)+'</h2><p>“'+esc(met?c.secret:'아직 가게에 찾아오지 않은 손님입니다.')+'”</p><dl><dt>우리의 관계</dt><dd>'+esc(E.relationLabel(v))+' '+(v>0?'+':'')+v+'</dd><dt>선호하는 대화</dt><dd>'+esc(met?p.manner:'만나면 알아갈 수 있어요.')+'</dd><dt>좋아하는 물건</dt><dd>'+esc(met?(p.likes||[]).map(x=>E.CATEGORIES[x]).join(' · '):'아직 모릅니다.')+'</dd><dt>취향</dt><dd>'+esc(met?p.interest:'아직 모릅니다.')+'</dd><dt>방문 횟수</dt><dd>'+met+'회</dd></dl><p class="save-note">만족스러운 거래는 관계를 높입니다. 우호적인 손님은 흥정에 더 너그럽지만, 같은 손님도 물건에 대해 착각하거나 거짓말할 수 있습니다.</p>')}
+function customerInfo(index=s.current.character){const c=PAWN_CHARACTERS[index],p=E.profile(index),met=s.met[index]||0,v=relationship(index);openDialog(portrait(index,'person-art')+'<div class="eyebrow">'+esc(c.role)+'</div><h2 style="color:'+c.color+'">'+esc(c.name)+'</h2><p>“'+esc(s.friendStories?.includes(index)?c.secret:met?'호감도 25가 되면 마음속 이야기를 들을 수 있습니다.':'아직 가게에 찾아오지 않은 손님입니다.')+'”</p><dl><dt>우리의 관계</dt><dd>'+esc(E.relationLabel(v))+' '+(v>0?'+':'')+v+'</dd><dt>선호하는 대화</dt><dd>'+esc(met?p.manner:'만나면 알아갈 수 있어요.')+'</dd><dt>좋아하는 물건</dt><dd>'+esc(met?(p.likes||[]).map(x=>E.CATEGORIES[x]).join(' · '):'아직 모릅니다.')+'</dd><dt>취향</dt><dd>'+esc(met?p.interest:'아직 모릅니다.')+'</dd><dt>방문 횟수</dt><dd>'+met+'회</dd></dl><p class="save-note">만족스러운 거래는 관계를 높입니다. 우호적인 손님은 흥정에 더 너그럽지만, 같은 손님도 물건에 대해 착각하거나 거짓말할 수 있습니다.</p>')}
 function eventInfo(){const ev=E.event(s),character=Number.isInteger(ev.character)?ev.character:0;openDialog('<div class="eyebrow">'+s.day+'번째 밤의 사건</div><h2>'+esc(ev.title)+'</h2><p>'+esc(ev.description)+'</p>'+portrait(character,'person-art')+'<p>'+esc(s.eventDone?ev.resolveText:ev.requestText)+'</p><div class="display-status">'+(ev.kind==='market'?(E.CATEGORIES[ev.category]||'모든 품목')+' 판매가 ×'+ev.mult:ev.kind==='request'?(s.eventDone?'의뢰를 완료했습니다.':'조건에 맞는 진품을 보관함에서 전달하세요.'):ev.kind==='gift'?'보상은 금고에 지급되었습니다.':'희귀한 물건을 만날 가능성이 높아집니다.')+'</div><button class="btn primary" data-action="dialog-close">알겠어요</button>')}
 
-function openAppraisalBook(){const cards=E.appraisalNotebook(s);openDialog('<div class="eyebrow">감정 수첩 · '+esc(E.CATEGORIES[E.item(s.current.itemId).category])+'</div><h2>세 가지를 따로 보세요</h2><p>진품이라도 거칠게 만들거나 손상될 수 있습니다. 정교한 복제품도 있습니다. 이 수첩은 이 가게 세계의 제작 관례입니다.</p><p>돋보기는 작은 선과 표면을, 불빛은 색·반사·투과를 확인합니다. 흐릿한 흔적은 단정하지 말고 거래를 보류하거나 위험을 감수하세요. 감정 도구 강화 후 다시 살피면 더 읽을 수 있습니다.</p>'+cards.map(c=>'<article class="reference-card"><h3>'+esc(c.title)+'</h3><p>'+esc(c.reference)+'</p></article>').join(''))}
+function openAppraisalBook(){const cards=E.appraisalNotebook(s);openDialog('<div class="eyebrow">감정 수첩 · '+esc(E.item(s.current.itemId).name)+'</div><h2>세 가지를 따로 보세요</h2><p>진품이라도 거칠게 만들거나 손상될 수 있습니다. 정교한 복제품도 있습니다. 이 수첩은 이 가게 세계의 제작 관례입니다.</p><p>돋보기는 작은 선과 표면을, 불빛은 색·반사·투과를 확인합니다. 흐릿한 흔적은 단정하지 말고 거래를 보류하거나 위험을 감수하세요. 감정 도구 강화는 흐릿한 특징을 더 읽게 해 줍니다. 3단계부터 새 방문의 조사가 3회가 됩니다.</p>'+cards.map(c=>'<article class="reference-card"><h3>'+esc(c.title)+'</h3><p>'+esc(c.reference)+'</p></article>').join(''))}
 
-function settings(){openDialog('<div class="eyebrow">AFTER HOURS · 대화와 거래</div><h2>말을 듣고, 값을 정하세요</h2><p>물건을 파는 손님과 사려는 손님이 무작위로 찾아옵니다. 시간 제한은 없습니다.</p><ol class="game-help"><li>특징을 묻고, 알맞은 도구로 부위를 살펴 감정 수첩과 비교하세요. 질문과 조사는 무료이며 횟수 제한이 없습니다.</li><li>같은 이름의 물건도 진품과 가품이 따로 존재합니다. 거짓말과 단순한 착각을 구별해 보세요.</li><li>금액을 직접 제안하고 손님의 역제안을 살피세요. 수락 버튼을 눌러야 거래됩니다.</li><li>실질적인 설명과 만족스러운 거래는 관계를 높입니다. 모욕적인 흥정이나 근거 없는 단정은 관계를 해칩니다.</li><li>구매 손님에게 취향에 맞는 재고를 권하고, 어떤 말로 소개할지 결정하세요.</li></ol><div class="settings-row"><span>거래 효과음</span><button data-action="sound">'+(s.sound?'켜짐':'꺼짐')+'</button></div><div class="settings-row"><span>진행 상황</span><button data-action="save">지금 저장</button></div><p class="save-note">'+(saveOK?'이 기기·브라우저에 자동 저장됩니다.':'현재 브라우저에서 저장할 수 없습니다.')+' 다른 기기와는 동기화되지 않습니다.</p><button class="btn secondary wide" data-action="title">시작 화면으로</button><button class="btn secondary danger" data-action="reset-ask">새 가게 시작하기</button>')}
+function settings(){openDialog('<div class="eyebrow">AFTER HOURS · 대화와 거래</div><h2>말을 듣고, 값을 정하세요</h2><p>물건을 파는 손님과 사려는 손님이 무작위로 찾아옵니다. 시간 제한은 없습니다.</p><ol class="game-help"><li>특징을 묻고, 알맞은 도구로 부위를 살펴 감정 수첩과 비교하세요. 질문 2회·조사 2회 안에서 중요한 특징을 고릅니다. 기록 다시 보기는 무료입니다.</li><li>같은 이름의 물건도 진품과 가품이 따로 존재합니다. 거짓말과 단순한 착각을 구별해 보세요.</li><li>금액을 직접 제안하고 손님의 역제안을 살피세요. 수락 버튼을 눌러야 거래됩니다.</li><li>실질적인 설명과 만족스러운 거래는 관계를 높입니다. 모욕적인 흥정이나 근거 없는 단정은 관계를 해칩니다.</li><li>구매 손님에게 취향에 맞는 재고를 권하고, 어떤 말로 소개할지 결정하세요.</li><li>여덟 손님을 맞이하면 밤의 자유 시간 2칸이 생깁니다. 도록 등록·차 마시기·재고 손질을 골라 보세요. 가게 관리에서 세 가지 목표, 수집록에서 테마 도록을 확인할 수 있습니다.</li></ol><div class="settings-row"><span>거래 효과음</span><button data-action="sound">'+(s.sound?'켜짐':'꺼짐')+'</button></div><div class="settings-row"><span>진행 상황</span><button data-action="save">지금 저장</button></div><p class="save-note">'+(saveOK?'이 기기·브라우저에 자동 저장됩니다.':'현재 브라우저에서 저장할 수 없습니다.')+' 다른 기기와는 동기화되지 않습니다.</p><button class="btn secondary wide" data-action="title">시작 화면으로</button><button class="btn secondary danger" data-action="reset-ask">새 가게 시작하기</button>')}
 function action(name,target){const uid=target?.dataset.uid;
-  if(name==='appraisal-book')openAppraisalBook();
+  if(name==='judge-jump')$('judgment-panel').scrollIntoView({block:'start',behavior:motion()});
+  else if(name==='appraisal-book')openAppraisalBook();
   else if(name==='next'){run(E.next);window.scrollTo({top:0,behavior:'instant'})}
   else if(name==='next-day'){run(E.nextDay);window.scrollTo({top:0,behavior:'instant'})}
   else if(name==='quick-sale')run(E.sell,uid,'quick');else if(name==='display-sale')run(E.sell,uid,'display');
   else if(name==='deliver'){const result=run(E.sell,uid,'request');if(result.ok)toast(E.event(s).resolveText)}
-  else if(name==='title')returnToTitle();else if(name==='stock')switchView('stock');else if(name==='dialog-close')$('detail-dialog').close();
+  else if(name==='title')returnToTitle();else if(name==='stock')switchView('stock');else if(name==='goals')switchView('shop');else if(name==='dialog-close')$('detail-dialog').close();
   else if(name==='sound'){s.sound=!s.sound;save();settings();tone('coin')}
   else if(name==='save'){save();toast(saveOK?'이 기기에 저장했어요.':'저장할 수 없습니다.')}
   else if(name==='reset-ask')openDialog('<h2>새 가게를 시작할까요?</h2><p>금고, 수집록, 관계와 거래 기록이 초기화됩니다. 손님과 사건은 새로 섞입니다.</p><button class="btn danger" data-action="reset-confirm">기록을 지우고 처음부터</button><button class="btn secondary" data-action="dialog-close">취소</button>');
@@ -128,6 +144,8 @@ function action(name,target){const uid=target?.dataset.uid;
 document.addEventListener('click',e=>{
   const el=e.target.closest('button');if(!el||el.disabled)return;
   if(el.dataset.action)action(el.dataset.action,el);
+  if(el.dataset.judgeKey){run(E.judge,el.dataset.judgeKey,el.dataset.judgeValue==='?'?null:Number(el.dataset.judgeValue))}
+  if(el.dataset.present){run(E.presentEvidence,el.dataset.present,el.dataset.kind);showResult('trade-impact')}
   if(el.dataset.talk){run(E.talk,el.dataset.talk);showResult('conversation-heading')}
   if(el.dataset.tool){investigationTool=el.dataset.tool;render()}
   if(el.dataset.investigate){inspectionFocus=el.dataset.investigate;inspectionVisit=s.current.uid;run(E.investigate,el.dataset.investigate);showResult('appraisal-observation')}
