@@ -95,7 +95,7 @@
     const genuineCount = owned.filter(lot => lot.genuine).length;
     A.openDialog(art(id, d.grade, 'modal-art') + '<small class="record-label">기록한 최고 등급</small>' + badge(d.grade) + '<h2>' + esc(it.name) + '</h2><p>“' + esc(it.story) + '”</p>' +
       '<p class="authenticity-note">같은 이름의 보물에도 진품과 가품이 섞여 있습니다. 이 기록은 지금까지 매입한 물건의 기록이며, 다음에 만날 물건의 진위를 보장하지 않습니다.</p>' +
-      '<dl><dt>분류</dt><dd>' + E.CATEGORIES[it.category] + '</dd><dt>알려진 특징</dt><dd>' + esc(it.clue) + '</dd><dt>전해지는 특성</dt><dd>' + esc(it.effect) + '</dd><dt>매입 횟수</dt><dd>' + d.count + '회</dd><dt>진품 발견 이력</dt><dd>' + (d.genuine ? '이전에 진품을 발견한 적 있음' : '아직 가품만 발견') + '</dd><dt>현재 보관한 개체</dt><dd>' + (owned.length ? '진품 ' + genuineCount + '개 · 가품 ' + (owned.length - genuineCount) + '개' : '보관 중인 물건 없음') + '</dd></dl>');
+      '<dl><dt>처음 만든 해</dt><dd>'+PAWN_ORIGINS[id].year+'년 · 가게 도록 기록</dd><dt>분류</dt><dd>' + E.CATEGORIES[it.category] + '</dd><dt>알려진 특징</dt><dd>' + esc(it.clue) + '</dd><dt>전해지는 특성</dt><dd>' + esc(it.effect) + '</dd><dt>매입 횟수</dt><dd>' + d.count + '회</dd><dt>진품 발견 이력</dt><dd>' + (d.genuine ? '이전에 진품을 발견한 적 있음' : '아직 가품만 발견') + '</dd><dt>현재 보관한 개체</dt><dd>' + (owned.length ? '진품 ' + genuineCount + '개 · 가품 ' + (owned.length - genuineCount) + '개' : '보관 중인 물건 없음') + '</dd></dl>');
   }
 
   window.PawnPanels = {
