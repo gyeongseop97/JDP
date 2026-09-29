@@ -68,7 +68,7 @@ function sellerLot(s,character){const choices=items().filter(x=>x.id!==s.lastIte
 function availableStock(s){return s.stock.filter(x=>x.displayAt===null)}
 function makeBuyerQuote(s,o,lot){const p=profile(o.character),it=item(lot.itemId),detected=!lot.genuine&&rand(s)<(.22+p.expertise*.65),taste=p.likes.includes(it.category)?1.28:p.dislikes.includes(it.category)?.76:1;const apparent=lot.apparent||Math.round(it.base*GRADES[lot.claimedGrade??lot.grade][2]*CONDITIONS[lot.condition??2][1]);const perceived=detected?lot.value:lot.genuine?lot.value:apparent;const base=Math.max(4,perceived*taste*marketFactor(s,it));return{uid:lot.uid,price:Math.max(3,Math.round(base*(.68+(1-p.frugality)*.15))),initialPrice:0,maxBase:Math.max(4,Math.round(base*(.98+(1-p.frugality)*.22+s.upgrades.word*.014))),perceivedValue:Math.round(base),detected,disclosed:false,acceptedOffer:false,lastOffer:null,taste,assertRoll:rand(s),asserted:false}}
 function applyBuyerLot(s,o,lot){const q=o.buyerQuotes[lot.uid];o.stockUid=lot.uid;o.itemId=lot.itemId;o.grade=lot.grade;o.claimedGrade=lot.claimedGrade??lot.grade;o.condition=lot.condition??2;o.genuine=lot.genuine;o.value=lot.value;o.apparent=lot.apparent||lot.value;o.estimate=q.perceivedValue;o.paid=lot.paid;o.price=q.price;o.asking=q.initialPrice;o.acceptedOffer=q.acceptedOffer;o.lastOffer=q.lastOffer;o.sleeper=false;o.baseFloor=0;o.floor=0}
-function roll(s){const candidates=chars().map((_,i)=>i).filter(i=>i!==s.lastCharacter),character=pick(s,candidates.length?candidates:[0]);s.serial++;s.met[character]=(s.met[character]||0)+1;const ready=availableStock(s),buyer=ready.length>0&&rand(s)<(s.stock.length>=capacity(s)-1?.7:.4);let o;if(buyer){const p=profile(character),preferred=ready.filter(x=>p.likes.includes(item(x.itemId).category)),lot=pick(s,preferred.length?preferred:ready);o={uid:'visit-'+s.serial,kind:'buyer',itemId:lot.itemId,character,grade:lot.grade,condition:lot.condition??2,genuine:lot.genuine,value:lot.value,asking:0,price:0,floor:0,baseFloor:0,paid:lot.paid,sale:0,attempts:0,status:'offered',line:null,wasFirst:false,negotiated:false,buyerQuotes:{}};conversation(s,o);for(const x of ready){const q=makeBuyerQuote(s,o,x);q.initialPrice=q.price;o.buyerQuotes[x.uid]=q}applyBuyerLot(s,o,lot)}else{o=sellerLot(s,character);conversation(s,o);o.floor=sellerFloor(s,o)}s.current=o;setupOrigin(o);s.lastCharacter=character;s.lastItemId=o.itemId;const greeting=voice(s,buyer?'buyerOpen':'sellerOpen');o.line=greeting;history(o,'customer',greeting);if(!buyer){const key=o.sleeper?'quality':stable(o,'pitch')<.55?'authenticity':'condition';o.openingTopic=key;history(o,'customer',voice(s,o.intent==='unaware'?'uncertainClaim':'claim',{detail:o.evidence.axes[key].claim}));}}
+function roll(s){const candidates=chars().map((_,i)=>i).filter(i=>i!==s.lastCharacter),character=pick(s,candidates.length?candidates:[0]);s.serial++;s.met[character]=(s.met[character]||0)+1;const ready=availableStock(s),buyer=ready.length>0&&rand(s)<(s.stock.length>=capacity(s)-1?.7:.4);let o;if(buyer){const p=profile(character),preferred=ready.filter(x=>p.likes.includes(item(x.itemId).category)),lot=pick(s,preferred.length?preferred:ready);o={uid:'visit-'+s.serial,kind:'buyer',itemId:lot.itemId,character,grade:lot.grade,condition:lot.condition??2,genuine:lot.genuine,value:lot.value,asking:0,price:0,floor:0,baseFloor:0,paid:lot.paid,sale:0,attempts:0,status:'offered',line:null,wasFirst:false,negotiated:false,buyerQuotes:{}};conversation(s,o);for(const x of ready){const q=makeBuyerQuote(s,o,x);q.initialPrice=q.price;o.buyerQuotes[x.uid]=q}applyBuyerLot(s,o,lot)}else{o=sellerLot(s,character);conversation(s,o);o.floor=sellerFloor(s,o)}s.current=o;setupOrigin(o);s.lastCharacter=character;s.lastItemId=o.itemId;const greeting=voice(s,buyer?'buyerOpen':'sellerOpen');o.line=greeting;history(o,'customer',greeting);}
 
 function sellerFloor(s,o){return Math.max(3,Math.round(o.baseFloor*clamp(1-relationship(s,o.character)*.0017-o.mood*.0007-o.leverage,.48,1.28)))}
 function buyerCeiling(s,o){const q=o.buyerQuotes?.[o.stockUid];return q?Math.max(3,Math.round(q.maxBase*clamp(1+relationship(s,o.character)*.0018+o.mood*.0008,.7,1.3))):0}
@@ -117,32 +117,7 @@ const COLLECTIONS=[
  {id:'time',name:'흐르는 시간',items:['clock-01','clock-04','clock-09','cosmic-10'],story:'잠시 모든 시계가 멎었다. 마지막 물건의 기록을 마치자, 잃어버린 한 분을 돌려주듯 종이 한 번 더 울렸다.'},
  {id:'stars',name:'작은 우주',items:['cosmic-01','cosmic-03','music-11','toy-10'],story:'천장에 조그만 별자리가 생겼다. 옆집 아이가 찾아와 자기 집에서도 그 별이 보인다고 했다.'}
 ];
-const TEA_LINES=[
- '따뜻하네, 냐. 빈 잔 하나 더 빌려 줘. 밖에서 기다리는 녀석도 추울 테니까.',
- '찻잔에 이름은 적지 말게. 오늘은 그냥 손님으로 있고 싶군.',
- '잔에서 김이 나는 걸 보니 안심이 돼요. 제가 아직 여기 있는 것 같아서요.',
- '향이 순하네요. 오늘은 효능을 따지지 않고 마셔 볼래요.',
- '배달할 곳은 많은데 쉬어 갈 곳은 드물거든요. 여기 불이 켜져 있어서 다행이에요.',
- '잔 온도 정상. 오늘의 거래 장부는 닫았습니다. 이 시간은 휴식으로 분류하겠습니다.',
- '한 모금만 마시고 갈랬는데. 다 식기 전에 한 잔 더 줄 수 있어?',
- '차 향은 오래 남지 않아서 좋습니다. 기억은 제가 간직하면 되니까요.',
- '여기선 누가 쫓아오진 않겠지? 그래, 그럼 잠깐만 앉아 있을게.',
- '오늘 있었던 일? 별일 없었어. 그런데 이렇게 물어봐 주니 좋네.',
- '찻잔이 손에 딱 맞네요. 물건도 사람도 맞는 자리가 있나 봐요.',
- '당분간은 가격 얘기 안 해도 되죠? 오늘은 좀 지쳤거든요.',
- '고맙습니다. 이 잔은 돌려드릴게요. 가져가고 싶은 물건과 빌린 물건은 다르니까요.',
- '물을 끓이는 소리가 좋군. 한동안 말없이 들어도 괜찮겠나?',
- '내일도 이 시간에 불을 켜 둘 거야? 지나가다가 들를지도 몰라.',
- '잔을 두 손으로 잡고 있으면 따뜻해져요. 생각보다 천천히요.',
- '거래할 때와 가게 분위기가 다르네요. 이런 시간도 있는 줄 몰랐어요.',
- '저 선반 물건들, 여기선 조금 편안해 보이네요. 주인이 잘 돌봐 주나 봐요.',
- '잠깐, 손에 기름 묻었네. 닦고 올게. 오늘은 고장 얘기 없이 차부터 마시자.',
- '눈치 보지 않고 앉아 있어도 되는 자리가 참 귀한데 말이야.',
- '오늘은 좋은 물건을 못 찾았어. 그래도 이 차 한 잔이면 헛걸음은 아니네.',
- '문 닫은 뒤의 가게도 좋아요. 물건들이 자기 이야기를 하는 것 같아요.',
- '천천히 마실게요. 돌아가는 길을 조금 늦춰도 괜찮을 것 같아요.',
- '그대의 찻잔에는 값을 매기지 않겠소. 다음에도 이 자리를 비워 두시오.'
-];
+
 function prepareLeisure(s){s.ambition=s.ambition||'profit';s.album=s.album||{};s.albumRewards=s.albumRewards||[];s.friendStories=s.friendStories||[];for(const id of Object.keys(s.met))if(relationship(s,+id)>=25&&!s.friendStories.includes(+id))s.friendStories.push(+id);if(s.closing&&!s.night)s.night={day:s.day,actions:2,done:[],report:[]};if(!s.closing)s.night=null}
 function goals(s){const definitions=[['profit','돈을 모으는 가게',s.profit,[500,3000,10000,30000],'G','물건을 싸게 사서 판매하고 순이익을 남기세요.'],['collection','이야기를 모으는 가게',Object.keys(s.album||{}).length,[4,12,36,72,144],'종','새로운 진품을 보관해 마감 후 도록에 등록하세요.'],['friends','단골이 쉬어 가는 가게',chars().filter((_,i)=>relationship(s,i)>=25).length,[1,3,8,16,24],'명','만족스러운 거래와 밤의 차 한 잔으로 가까워지세요.']];return definitions.map(([id,name,value,tiers,unit,tip])=>({id,name,value,tiers,unit,tip,target:tiers.find(n=>n>value)||tiers.at(-1),completed:tiers.filter(n=>value>=n).length,finished:value>=tiers.at(-1)}))}
 function setAmbition(s,id){if(!['profit','collection','friends'].includes(id))return{ok:false,message:'선택할 수 없는 목표입니다.'};s.ambition=id;return{ok:true,message:'관심 목표를 바꿨습니다. 세 가지 기록은 모두 함께 쌓입니다.'}}
@@ -150,7 +125,7 @@ function repairQuote(s,lot){const next=Math.min(4,(lot.condition??2)+1),value=Ma
 function nightOptions(s){if(!s.closing||!s.night)return[];const done=new Set(s.night.done),out=[];for(const lot of availableStock(s)){if(lot.genuine&&!s.album[lot.itemId])out.push({kind:'catalog',id:lot.uid,itemId:lot.itemId,cost:0,label:item(lot.itemId).name});if(lot.condition<4&&!done.has('repair:'+lot.uid)){const r=repairQuote(s,lot);out.push({kind:'repair',id:lot.uid,itemId:lot.itemId,label:item(lot.itemId).name,before:quote(s,lot),...r})}}for(const id of Object.keys(s.met)){const i=+id;if(s.met[i]>0&&!done.has('tea:'+i))out.push({kind:'tea',id:String(i),character:i,cost:25,label:chars()[i].name})}return out}
 function nightAction(s,kind,id){if(!s.closing||!s.night||s.night.actions<=0)return{ok:false,message:'마감 뒤 자유 시간이 남아 있을 때 할 수 있습니다.'};const option=nightOptions(s).find(x=>x.kind===kind&&x.id===String(id));if(!option)return{ok:false,message:'지금 할 수 없는 활동입니다.'};if(s.coins<option.cost)return{ok:false,message:'소지금이 부족합니다.'};s.coins-=option.cost;s.night.actions--;s.night.done.push(kind+':'+id);let message;
  if(kind==='catalog'){const lot=s.stock.find(x=>x.uid===id);s.album[lot.itemId]={day:s.day,grade:lot.grade};message=item(lot.itemId).name+'의 진품을 도록에 등록했습니다. 물건은 그대로 보관 중이며 나중에 팔아도 기록은 남습니다.';for(const set of COLLECTIONS)if(set.items.every(key=>s.album[key])&&!s.albumRewards.includes(set.id)){s.albumRewards.push(set.id);s.coins+=120;message+=' 「'+set.name+'」 완성! 기록 지원금 +120G. '+set.story;notify(s,set.name+' 도록 완성 +120G')}}
- else if(kind==='tea'){const i=option.character,before=relationship(s,i);s.relationships[i]=clamp(before+6,-100,100);if(s.relationships[i]>=25&&!s.friendStories.includes(i))s.friendStories.push(i);message=chars()[i].name+' · “'+TEA_LINES[i]+'” 호감도 '+before+' → '+s.relationships[i]+'.';if(before<25&&s.relationships[i]>=25)message+=' 마음속 이야기를 들려줬습니다. 손님 수집록에서 읽어 보세요.'}
+ else if(kind==='tea'){const i=option.character,before=relationship(s,i);s.relationships[i]=clamp(before+6,-100,100);if(s.relationships[i]>=25&&!s.friendStories.includes(i))s.friendStories.push(i);message=chars()[i].name+' · “'+G.PawnTradeVoice.say(i,'tea')+'” 호감도 '+before+' → '+s.relationships[i]+'.';if(before<25&&s.relationships[i]>=25)message+=' 마음속 이야기를 들려줬습니다. 손님 수집록에서 읽어 보세요.'}
  else{const lot=s.stock.find(x=>x.uid===id),old=lot.value;lot.apparent=Math.round(lot.apparent*CONDITIONS[option.condition][1]/CONDITIONS[lot.condition][1]);lot.condition=option.condition;lot.value=option.value;lot.paid+=option.cost;message=item(lot.itemId).name+' 손질 완료. 가치 '+old+' → '+lot.value+'G, 손질비 '+option.cost+'G. 비용은 매입 원가에 포함됩니다.'}
  s.night.report.push(message);log(s,message,'good');return{ok:true,message,kind}}
 

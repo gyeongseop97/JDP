@@ -66,7 +66,7 @@ function renderDialogue(o){
   const focus=cards.find(c=>c.observation===observed);
   if(focus)$('appraisal-observation').innerHTML+='<details class="observation-reference"><summary>수첩에서는 뭐라고 했지?</summary><p>'+esc(focus.reference)+'</p></details>'+actions(focus);
   $('evidence-count').textContent=cards.filter(c=>c.observation).length+' / 3';
-  $('appraisal-notes').innerHTML=cards.map(c=>'<article class="comparison-card"><h4>'+esc(c.title)+'</h4><dl><dt>손님의 말 · 사실 확인 전</dt><dd>'+esc(c.claim||'아직 묻지 않았습니다.')+'</dd><dt>내가 본 흔적</dt><dd>'+esc(c.observation||'아직 조사하지 않았습니다.')+'</dd></dl><details><summary>비교 기준 다시 읽기</summary><p>'+esc(c.reference)+'</p></details>'+'</article>').join('');
+  $('appraisal-notes').innerHTML=cards.map(c=>'<article class="comparison-card"><h4>'+esc(c.title)+'</h4><dl><dt>손님의 말 · 사실 확인 전</dt><dd>'+esc(c.claim?PawnTradeVoice.spoken(c.claim,o.character):'아직 묻지 않았습니다.')+'</dd><dt>내가 본 흔적</dt><dd>'+esc(c.observation||'아직 조사하지 않았습니다.')+'</dd></dl><details><summary>비교 기준 다시 읽기</summary><p>'+esc(c.reference)+'</p></details>'+'</article>').join('');
   renderPriceGuide(o);renderOrigin(o);
 
 
