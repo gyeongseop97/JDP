@@ -4,7 +4,7 @@ const args=process.argv.slice(2),option=(key,fallback)=>args.includes(key)?args[
 const port=Number(option('--port','4175')),base='/'+String(option('--base','/')).replace(/^\/+|\/+$/g,'');
 const prefix=base==='/'?'/':base+'/',root=__dirname;
 if(!Number.isInteger(port)||port<1024||port>65535||base.includes('..'))throw Error('Invalid preview options');
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.webp':'image/webp','.webmanifest':'application/manifest+json; charset=utf-8','.md':'text/plain; charset=utf-8'};
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.webp':'image/webp','.webmanifest':'application/manifest+json; charset=utf-8','.md':'text/plain; charset=utf-8','.wav':'audio/wav','.mp3':'audio/mpeg','.json':'application/json; charset=utf-8'};
 http.createServer((req,res)=>{
  let pathname;try{pathname=decodeURIComponent(new URL(req.url,'http://127.0.0.1').pathname)}catch{res.writeHead(400);res.end();return}
  if(prefix!=='/'&&pathname===base){res.writeHead(302,{Location:prefix});res.end();return}

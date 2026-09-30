@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "original": true,
+  "tracks": [
+    {
+      "id": "moonlit-sign",
+      "title": "달빛 아래 간판",
+      "file": "music/moonlit-sign.mp3",
+      "bpm": 112,
+      "bars": 24,
+      "duration": 51.4285625,
+      "sampleRate": 32000,
+      "frames": 1645714,
+      "peak": 0.6179,
+      "rms": 0.0929,
+      "seamDelta": 0.00487,
+      "bytes": 824379
+    },
+    {
+      "id": "odd-little-bargain",
+      "title": "수상한 흥정",
+      "file": "music/odd-little-bargain.mp3",
+      "bpm": 104,
+      "bars": 32,
+      "duration": 73.84615625,
+      "sampleRate": 32000,
+      "frames": 2363077,
+      "peak": 0.499,
+      "rms": 0.0881,
+      "seamDelta": 0.00032,
+      "bytes": 1183223
+    },
+    {
+      "id": "after-the-last-guest",
+      "title": "마지막 손님이 떠난 뒤",
+      "file": "music/after-the-last-guest.mp3",
+      "bpm": 84,
+      "bars": 16,
+      "duration": 45.71428125,
+      "sampleRate": 32000,
+      "frames": 1462857,
+      "peak": 0.3759,
+      "rms": 0.0692,
+      "seamDelta": 0.0,
+      "bytes": 732805
+    }
+  ]
+}
