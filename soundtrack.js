@@ -75,12 +75,17 @@
     ramp(effectsBus.gain, prefs.muted || !A.state.sound ? 0 : prefs.effects / 100);
     if (prefs.muted || prefs.music === 0 || document.hidden) { stopMusic(); paint(); return; }
     const key = wanted();
-    if (active?.key === key || loading === key) { paint(); return; }
+    if (active?.key === key) {
+      // Returning to the playing scene cancels a different track still decoding.
+      if (loading) { serial++; loading=''; }
+      paint(); return;
+    }
+    if (loading === key) { paint(); return; }
     const ticket = ++serial;
     loading = key; error = ''; paint();
     try {
       const decoded = await buffer(key);
-      if (ticket !== serial || document.hidden || prefs.muted || prefs.music === 0) return;
+      if (ticket !== serial || key !== wanted() || document.hidden || prefs.muted || prefs.music === 0) return;
       const source = ctx.createBufferSource(), gain = ctx.createGain();
       source.buffer = decoded; source.loop = true;
       source.loopStart = 0; source.loopEnd = Math.min(decoded.duration, tracks[key].duration);
