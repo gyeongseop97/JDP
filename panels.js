@@ -36,7 +36,7 @@
   function codex() {
     const s = A.state;
     for (const b of document.querySelectorAll('[data-codex-mode]')) b.classList.toggle('active', b.dataset.codexMode === A.codexMode);
-    $('codex-count').textContent = A.codexMode === 'people' ? Object.keys(s.met).length + ' / 24' : A.codexMode === 'grades' ? new Set(Object.values(s.discovered).map(x => x.grade)).size + ' / 9' : Object.keys(s.discovered).length + ' / 144';
+    $('codex-count').textContent = A.codexMode === 'people' ? Object.keys(s.met).length + ' / ' + PAWN_CHARACTERS.length : A.codexMode === 'grades' ? new Set(Object.values(s.discovered).map(x => x.grade)).size + ' / 9' : Object.keys(s.discovered).length + ' / 144';
     $('category-filter').hidden = A.codexMode !== 'items';
     $('category-filter').innerHTML = '<button data-category="all" class="' + (A.category === 'all' ? 'active' : '') + '">전체</button>' + Object.entries(E.CATEGORIES).map(([k, v]) => '<button data-category="' + k + '" class="' + (A.category === k ? 'active' : '') + '">' + v + '</button>').join('');
     if (A.codexMode === 'people') {
@@ -72,7 +72,7 @@
         '아주 흐린 표식과 반사도 더 자세히 읽습니다. 손님의 주장과 맞는지는 직접 확인하세요.',
         '가장 흐릿한 흔적까지 읽는 최고 단계입니다. 흔적의 의미와 거래할 가격은 직접 판단하세요.'
       ],
-      inspection: Array.from({ length: 4 }, (_, i) => '방문당 조사 ' + (2+i) + '회 → ' + (3+i) + '회. 진행 중인 거래에도 1회가 추가됩니다. 이미 쓴 횟수와 관찰 기록은 유지됩니다.'),
+      inspection: Array.from({ length: 4 }, (_, i) => '방문당 조사 ' + (2+i) + '회 → ' + (3+i) + '회. '+['표식 안쪽 교차 확인이 열립니다.','제작자 서명 판독이 열립니다.','수리 부품의 사용층 확인이 열립니다.','기본 세 부위와 정밀 조사 세 가지를 모두 살펴볼 여유가 생깁니다.'][i]+' 진행 중인 거래에도 1회가 추가됩니다.'),
       shelves: Array.from({ length: 5 }, (_, i) => '보관함 ' + (12 + i * 4) + '칸, 위탁 판매 ' + (4 + i) + '칸으로 넓힙니다.'),
       word: Array.from({ length: 5 }, (_, i) => '판매가 ' + Math.round((i + 1) * 3.5) + '% 보너스. 흥정과 희귀 물품 발견에도 유리해집니다.')
     };

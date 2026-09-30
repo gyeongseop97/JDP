@@ -208,6 +208,7 @@ for(const row of rows){
  const [id,tool,authSite,good,bad,family,craftSite,wearSite]=row,it=G.PAWN_ITEMS.find(x=>x.id===id),r=recipes[family];
  const quality=r.quality.map(x=>craftSite+': '+x),condition=r.wear.map(x=>wearSite+': '+x),wearTool=r.wearTool||'lens';
  result[id]={
+ materialFamily:family,
  sites:{mark:{label:authSite},material:{label:craftSite},wear:{label:wearSite}},
  authenticity:{tool,site:'mark',topicLabel:authSite,question:authQuestions[id],reference:'진품의 특징\n'+good+'\n\n흔한 가품의 특징\n'+bad,claimGenuine:good,claimReplica:bad,observedGenuine:good,observedReplica:bad,observedUnclear:authSite+' 부분이 닳거나 가려졌다. 지금은 제대로 보이지 않는다.'},
  quality:{tool:r.tool,site:'material',topicLabel:craftSite+'의 마감',question:craftSite+', '+craftQuestions[family],reference:craftSite+'에서 솜씨를 살펴본다.\n\n거친 마감: '+r.quality[0]+'\n보통 마감: '+r.quality[1]+'\n정교한 마감: '+r.quality[2]+'\n\n잘 만들었다고 꼭 진품은 아니다.',claims:quality,observations:quality},
