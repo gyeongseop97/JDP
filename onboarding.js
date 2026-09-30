@@ -5,12 +5,14 @@
   const E = A.E, $ = selector => document.querySelector(selector), copy = value => JSON.parse(JSON.stringify(value));
   let active = false, stepIndex = 0, progress = [], initialState = null, initialView = 'trade', snapshot = {};
   let highlightTimer, coachObserver;
+  let completedSteps = new Set(), tutorialReported = false;
+  function tutorialMetric(kind) { window.dispatchEvent(new CustomEvent('pawn:tutorial', {detail:{kind,step:stepIndex+1,total:steps.length,completed:completedSteps.size}})); }
   const seenEvents = new WeakSet();
   const title = document.createElement('section');
   title.id = 'title-screen';
   title.className = 'pawn-title';
   title.setAttribute('aria-label', '수상한 전당포 시작 화면');
-  title.innerHTML = '<div class="title-shade"></div><div class="title-lantern" aria-hidden="true">✧</div><div class="title-content"><div class="title-kicker">자정에만 문을 여는 가게</div><h1 class="title-logo-heading"><img class="title-logo" src="title-logo.webp" alt="수상한 전당포" width="1536" height="1024" fetchpriority="high"></h1><p class="title-english">MIDNIGHT PAWN <span>v6.7</span></p><p class="title-story">누군가에게는 고물.<br>누군가에게는 평생의 보물.<br><em>오늘 밤, 당신은 무엇을 믿을 건가요?</em></p><div class="title-buttons"><button class="pixel-menu-button new-game" data-onboard="new"><span aria-hidden="true">✦</span>새로 시작</button><button class="pixel-menu-button" data-onboard="continue"><span aria-hidden="true">▣</span>불러오기</button><button class="pixel-menu-button tutorial-menu-button" data-onboard="tutorial"><span aria-hidden="true">⌕</span>체험 튜토리얼<small>직접 대화하고 거래하며 배우기</small></button></div><p class="title-save-status"></p><div class="title-details"><span>144가지 물건</span><i>·</i><span>26명의 손님</span><i>·</i><span>9개 등급</span></div><p class="title-footer">시간 제한 없이, 천천히 읽고 흥정하세요.</p></div>';
+  title.innerHTML = '<div class="title-shade"></div><div class="title-lantern" aria-hidden="true">✧</div><div class="title-content"><div class="title-kicker">자정에만 문을 여는 가게</div><h1 class="title-logo-heading"><img class="title-logo" src="title-logo.webp" alt="수상한 전당포" width="1536" height="1024" fetchpriority="high"></h1><p class="title-english">MIDNIGHT PAWN <span>v6.8</span></p><p class="title-story">누군가에게는 고물.<br>누군가에게는 평생의 보물.<br><em>오늘 밤, 당신은 무엇을 믿을 건가요?</em></p><div class="title-buttons"><button class="pixel-menu-button new-game" data-onboard="new"><span aria-hidden="true">✦</span>새로 시작</button><button class="pixel-menu-button" data-onboard="continue"><span aria-hidden="true">▣</span>불러오기</button><button class="pixel-menu-button tutorial-menu-button" data-onboard="tutorial"><span aria-hidden="true">⌕</span>체험 튜토리얼<small>직접 대화하고 거래하며 배우기</small></button></div><p class="title-save-status"></p><div class="title-details"><span>144가지 물건</span><i>·</i><span>26명의 손님</span><i>·</i><span>9개 등급</span></div><p class="title-footer">시간 제한 없이, 천천히 읽고 흥정하세요.</p></div>';
   document.body.append(title);
 
   const coach = document.createElement('aside');
@@ -154,7 +156,7 @@
     let selector = goal?.target;
     if (steps[stepIndex]?.settings && !$('#detail-dialog')?.open) selector = '#settings-button';
     if (selector === '#pass-button, [data-action="next"]') return [...document.querySelectorAll(selector)].find(el => el.getClientRects().length && !el.disabled) || $(selector);
-    return selector ? $(selector) : null;
+    return selector ? [...document.querySelectorAll(selector)].find(el => el.getClientRects().length && !el.disabled) || $(selector) : null;
   }
   function scrollTarget(target) {
     if (!target) return;
@@ -206,12 +208,13 @@
     if (retry && initialState) { setState(copy(initialState)); A.switchView(initialView); }
     else { if (step.setup) step.setup(); if (step.view) A.switchView(step.view); initialState = copy(A.state); initialView = $('.view.active')?.id.replace('view-', '') || 'trade'; }
     snapshot = { turn: A.state.turn, coins: A.state.coins, current: copy(A.state.current) };
-    progress = step.goals.map(() => false); coach.hidden = false; coach.classList.remove('collapsed'); $('[data-tutorial="collapse"]').textContent = '접기'; $('[data-tutorial="collapse"]').setAttribute('aria-expanded', 'true'); renderCoach(true);
+    progress = step.goals.map(() => false); coach.hidden = false; coach.classList.remove('collapsed'); $('[data-tutorial="collapse"]').textContent = '접기'; $('[data-tutorial="collapse"]').setAttribute('aria-expanded', 'true'); renderCoach(true); tutorialMetric('step');
   }
   function evaluate(event) {
     if (!active || !progress.length) return;
     const step = steps[stepIndex]; let changed = false;
     step.goals.forEach((goal, i) => { if (!progress[i] && goal.test(A.state, event)) { progress[i] = true; changed = true; } });
+    if (progress.every(Boolean) && !completedSteps.has(stepIndex)) { completedSteps.add(stepIndex); tutorialMetric('step_complete'); }
     if (changed) renderCoach(event?.type !== 'reading'); else highlight(false);
   }
   function showTitle() {
@@ -227,15 +230,17 @@
     menu.showModal();
   }
   function startTutorial() {
+    completedSteps = new Set(); tutorialReported = false;
     if (menu.open) menu.close(); closeGameDialog(); active = true; A.beginTutorial(20260923); hideTitle(); document.body.classList.add('tutorial-running'); coach.hidden = false; enterStep(0);
   }
-  function endTutorial() { active = false; progress = []; clearHighlight(); coach.hidden = true; document.body.classList.remove('tutorial-running'); if (menu.open) menu.close(); measureCoach(); A.endTutorial(); }
+  function endTutorial() { if(active && !tutorialReported) tutorialMetric('exit'); active = false; progress = []; clearHighlight(); coach.hidden = true; document.body.classList.remove('tutorial-running'); if (menu.open) menu.close(); measureCoach(); A.endTutorial(); }
   function chapterMenu() {
     const chapters = steps.map((step, index) => ({ title: step.chapter, index })).filter((x, i, list) => i === 0 || x.title !== list[i - 1].title);
     menu.innerHTML = '<div class="onboarding-dialog-mark">▤</div><h2>배우고 싶은 장면부터</h2><p>각 장은 준비된 연습 상황으로 시작합니다. 실제 저장은 그대로 남습니다.</p><div class="tutorial-chapters">' + chapters.map((chapter, i) => '<button data-tutorial-chapter="' + chapter.index + '"><span>' + String(i + 1).padStart(2, '0') + '</span>' + A.esc(chapter.title) + '</button>').join('') + '</div><button class="pixel-menu-button" data-onboard="cancel">연습 계속하기</button>';
     menu.showModal();
   }
   function finish() {
+    if (!tutorialReported) { tutorialMetric('finish'); tutorialReported = true; }
     menu.innerHTML = '<div class="onboarding-dialog-mark">✦</div><p class="title-kicker">READY TO OPEN</p><h2>이제 당신의 가게입니다</h2><p>말과 물건을 대조하고, 내 가격을 정하고, 손님의 마음을 움직여 보세요.</p><p class="onboarding-safe-note">체험에서 쓴 돈과 거래는 실제 저장에 반영되지 않았습니다.</p><div class="onboarding-dialog-actions"><button class="pixel-menu-button new-game" data-tutorial="finish">시작 화면으로</button><button class="pixel-menu-button" data-tutorial="chapters">원하는 장면 다시 연습</button></div>';
     menu.showModal();
   }
@@ -262,7 +267,7 @@
     else if (action === 'chapters') { if (menu.open) menu.close(); chapterMenu(); }
     else if (action === 'collapse') { const collapsed = coach.classList.toggle('collapsed'); button.textContent = collapsed ? '설명 보기' : '접기'; button.setAttribute('aria-expanded', String(!collapsed)); measureCoach(); }
     else if (action === 'retry') enterStep(stepIndex, true);
-    else if (action === 'skip' || action === 'next') { if (stepIndex === steps.length - 1) finish(); else enterStep(stepIndex + 1); }
+    else if (action === 'skip' || action === 'next') { if(action === 'skip') tutorialMetric('skip'); if (stepIndex === steps.length - 1) finish(); else enterStep(stepIndex + 1); }
     else if (button.dataset.tutorialChapter !== undefined) enterStep(Number(button.dataset.tutorialChapter));
     else if (button.dataset.tutorialJump) { const selector = button.dataset.tutorialJump; scrollTarget($(selector)); evaluate({ type: 'reading', selector }); }
     if (active && !onboard && !action && button.dataset.tutorialChapter === undefined && !button.dataset.tutorialJump) setTimeout(() => evaluate({ type: 'click', element: button }), 0);
