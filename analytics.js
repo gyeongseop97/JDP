@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const A=window.PawnApp, ID='G-D2VLR1ZB3C', VERSION='6.10', KEY='midnight-pawn-analytics';
+  const A=window.PawnApp, ID='G-D2VLR1ZB3C', VERSION='6.11', KEY='midnight-pawn-analytics';
   if(!A)return;
   const titles={title:'시작 화면',trade:'거래하기',stock:'보관함',collection:'수집록',shop:'가게 관리',tutorial:'체험 튜토리얼'};
   const host=location.hostname.toLowerCase();

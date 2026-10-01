@@ -30,10 +30,10 @@ function extraOptions(o){return(o.discovery?.clues||[]).filter(x=>x.inspection.s
 function notebook(o){return Object.entries(TOPICS).map(([topic,title])=>{
  const clues=o.discovery.clues.filter(x=>x.topic===topic),a=o.evidence.axes[topic==='function'?'condition':topic];
  return {key:topic==='function'?'condition':topic,recordKey:topic,title,site:clues[0]?.siteLabel||'',tool:clues[0]?.tool||a.tool,reference:topic==='function'?'사용할 때의 이상은 겉모습과 따로 확인합니다. 손님의 말과 직접 관찰한 반응을 비교하세요.':a.reference,
-  claim:clues.filter(x=>x.heard).map(x=>x.claim).join('\n')||null,
+  claim:o.dialogue?.answers[topic]?.length?o.dialogue.answers[topic].map(x=>x.text).join('\n'):clues.filter(x=>x.heard).map(x=>x.claim).join('\n')||null,
   observation:clues.filter(x=>x.observed).map(x=>x.full).join('\n')||o.inspectionResults[clues[0]?.inspection]||null,
   ids:clues.map(x=>x.inspection),extra:''};
- });}
+ }).concat({key:'condition',recordKey:'use',title:'사용법',site:'물건의 쓰임새',tool:'lens',reference:'알려진 사용법과 실제 작동 여부는 구분해서 판단합니다.',claim:o.dialogue?.answers.use.map(x=>x.text).join('\n')||null,observation:null,ids:[],extra:''});}
 function valid(o){const d=o.discovery;if(o.kind!=='seller'||d===undefined)return true;if(d?.version!==1||d.itemId!==o.itemId||!Array.isArray(d.clues)||d.clues.length>30)return false;const ids=new Set();return d.clues.every(x=>{if(!x||typeof x.id!=='string'||ids.has(x.id))return false;ids.add(x.id);return Object.hasOwn(TOPICS,x.topic)&&['authenticity','quality','condition'].includes(x.axis)&&['lens','light'].includes(x.tool)&&['mark','material','wear'].includes(x.site)&&['claim','full','siteLabel','inspection'].every(k=>typeof x[k]==='string'&&x[k].length<2000)&&typeof x.heard==='boolean'&&typeof x.observed==='boolean';});}
 G.PawnDiscovery={setup,available,next,inspect,extraOptions,notebook,valid,fragments};
 })(globalThis);

@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict');
-for(const f of ['items.js','characters.js','profiles.js','appraisal-data.js','legacy-item-appraisals.js','item-appraisals.js','guest-data.js','voices.js','trade-voice.js','affinity-voice.js','origin-data.js','customer-goals.js','evolution.js','discovery-data.js','discovery.js','engine.js'])vm.runInThisContext(fs.readFileSync(path.join(__dirname,f),'utf8'),{filename:f});
+for(const f of ['items.js','characters.js','profiles.js','appraisal-data.js','legacy-item-appraisals.js','item-appraisals.js','guest-data.js','voices.js','trade-voice.js','affinity-voice.js','origin-data.js','customer-goals.js','evolution.js','dialogue-data.js','dialogue-reply.js','discovery-data.js','discovery.js','engine.js'])vm.runInThisContext(fs.readFileSync(path.join(__dirname,f),'utf8'),{filename:f});
 const E=PawnEngine,copy=x=>JSON.parse(JSON.stringify(x));let tests=0;
 function test(name,fn){fn();tests++;console.log('PASS '+name)}
 function unchanged(s,fn){const before=JSON.stringify(s);assert.equal(fn().ok,false);assert.equal(JSON.stringify(s),before)}

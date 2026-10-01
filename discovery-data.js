@@ -238,7 +238,7 @@ function build(o={},c={},item){
   claim:adverse&&claimed===0?spec.bad:spec.good,
   full:adverse?spec.bad:spec.good,
   siteLabel:spec.noTest&&!overrides[item.id]&&item.name?item.name+'의 사용 방식':spec.siteLabel,
-  tool:spec.tool,site:spec.site,adverse
+  tool:spec.tool,site:spec.site,adverse,reportedProblem:spec.noTest?null:adverse&&claimed===0
  });
  // Function failures describe the existing condition band, so they never multiply value again.
  return result;

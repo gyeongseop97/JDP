@@ -85,6 +85,27 @@ const hearsay=[
  '전 주인한테 들었어! 내가 직접 들여다본 건 아니야!',
  '전 소유자의 설명입니다. 제가 직접 확인한 내용은 아닙니다.'
 ];
+// Common dialogue predicates need explicit contractions before noun-copula handling.
+Object.assign(endings,{
+ 필요하다:'필요해요',싶다:'싶어요',이렇다:'이래요',그렇다:'그래요',저렇다:'저래요',모른다:'몰라요',모르다:'몰라요',안다:'알아요',알다:'알아요',
+ 본다:'봐요',쓴다:'써요',쓸다:'쓸어요',읽는다:'읽어요',듣는다:'들어요',말한다:'말해요',말했다:'말했어요',
+ 된다:'돼요',되다:'돼요',좋다:'좋아요',싫다:'싫어요',어렵다:'어려워요',쉽다:'쉬워요',
+ 다니다:'다녀요',준다:'줘요',주다:'줘요',한다:'해요',하다:'해요',쓰다:'써요',보다:'봐요',
+ 보이다:'보여요',붙이다:'붙여요',움직이다:'움직여요',먹이다:'먹여요',조이다:'조여요',
+ 줄이다:'줄여요',녹이다:'녹여요',놓이다:'놓여요',쓰이다:'쓰여요',쌓이다:'쌓여요',
+ 걸린다:'걸려요',열린다:'열려요',닫힌다:'닫혀요',쓰인다:'쓰여요',읽힌다:'읽혀요',들린다:'들려요',
+ 터뜨린다:'터뜨려요',거둔다:'거둬요',바란다:'바라요',원한다:'원해요',느낀다:'느껴요',지킨다:'지켜요',
+ 놓는다:'놔요',살펴본다:'살펴봐요',뒤집는다:'뒤집어요',건다:'걸어요',잡는다:'잡아요',뺀다:'빼요',
+ 찍는다:'찍어요',다룬다:'다뤄요',고른다:'골라요',넘긴다:'넘겨요',펼친다:'펼쳐요',꺼낸다:'꺼내요',
+ 흔든다:'흔들어요',튕긴다:'튕겨요',둔다:'둬요',받친다:'받쳐요',푼다:'풀어요',든다:'들어요',
+ 맞댄다:'맞대요',민다:'밀어요',누른다:'눌러요',세운다:'세워요',옮긴다:'옮겨요',만진다:'만져요',
+ 지닌다:'지녀요',기울인다:'기울여요',기울이다:'기울여요',들이다:'들여요'
+});
+// These verbs share the letters 이다 with a noun copula, but are not nouns.
+const nonCopulas=new Set(['보이다','붙이다','움직이다','먹이다','조이다','줄이다','녹이다','놓이다','쓰이다','쌓이다','기울이다','들이다']);
+const shortCopulas=new Set(['용도다','시계다','변화다','망치다','철퇴다','축음기다','도구다','소라다','악보다','먼저다']);
+function nounBase(word){if(shortCopulas.has(word))return word.slice(0,-1);return word.endsWith('이다')&&!nonCopulas.has(word)?word.slice(0,-2):null;}
+function hasFinal(word){const code=word.charCodeAt(word.length-1);return code>=0xac00&&code<=0xd7a3&&(code-0xac00)%28!==0;}
 // Clues are authored in declarative Korean. Change only the sentence ending;
 // numbers, locations, polarity and the actual clue remain untouched.
 const reverse=Object.entries(endings).sort((a,b)=>b[1].length-a[1].length);
@@ -94,23 +115,31 @@ function declarative(text){
  return text;
 }
 function formal(word){
+ const noun=nounBase(word);if(noun!==null)return noun+'입니다';
  if(word.endsWith('니다'))return word;
  if(!word.endsWith('다'))return word;
  if(word.endsWith('는다'))return word.slice(0,-2)+'습니다';
  let stem=word.slice(0,-1),last=stem.charCodeAt(stem.length-1),final=(last-0xac00)%28;
  if(last<0xac00||last>0xd7a3)return word;
- if(final===4){stem=stem.slice(0,-1)+String.fromCharCode(last-4);final=0}
+ if(final===4||final===8){stem=stem.slice(0,-1)+String.fromCharCode(last-final);final=0}
  return final===0?stem.slice(0,-1)+String.fromCharCode(stem.charCodeAt(stem.length-1)+17)+'니다':stem+'습니다';
 }
-function ending(word){if(endings[word])return endings[word];const c=word.charCodeAt(word.length-2);return word.endsWith('다')&&c>=0xac00&&c<=0xd7a3&&(c-0xac00)%28===20?word.slice(0,-1)+'어요':word}
+function ending(word){
+ if(endings[word])return endings[word];
+ const noun=nounBase(word);if(noun!==null)return noun+(hasFinal(noun)?'이에요':'예요');
+ if(word.endsWith('한다')||word.endsWith('하다'))return word.slice(0,-2)+'해요';
+ if(word.endsWith('싶다'))return word.slice(0,-2)+'싶어요';
+ const c=word.charCodeAt(word.length-2);
+ return word.endsWith('다')&&c>=0xac00&&c<=0xd7a3&&(c-0xac00)%28===20?word.slice(0,-1)+'어요':word;
+}
 function spoken(text,index){
  const style=styles[index]||'formal';
  return String(text??'').replace(/^(?:「[^」]+」|[^:.]+):\s*/,'').replace(/([^.!?]+)([.!?]|$)/g,(_,body,punct)=>{
   if(!body.trim())return body+punct;
   const t=declarative(body),mark=punct||'.';
-  if(style==='cat')return t.replace(/다$/,'다냥')+mark;
-  if(style==='elder')return (t.endsWith('단다')?t:t.replace(/다$/,'단다'))+mark;
-  if(style==='old')return t.replace(/다$/,'다네')+mark;
+  if(style==='cat')return t.replace(/\S+$/,word=>{const noun=nounBase(word);return noun!==null?noun+(hasFinal(noun)?'이다냥':'다냥'):word.replace(/다$/,'다냥')})+mark;
+  if(style==='elder')return t.replace(/\S+$/,word=>{const noun=nounBase(word);return noun!==null?noun+(hasFinal(noun)?'이란다':'란다'):word.endsWith('단다')?word:word.replace(/다$/,'단다')})+mark;
+  if(style==='old')return t.replace(/\S+$/,word=>{const noun=nounBase(word);return noun!==null?noun+'일세':word.replace(/겠다$/,'겠네').replace(/다$/,'다네')})+mark;
   if(style==='plain'||style==='bold')return t+(style==='bold'&&mark==='.'?'!':mark);
   if(style==='formal'||style==='robot')return t.replace(/\S+$/,formal)+mark;
   let out=t.replace(/\S+$/,ending);
@@ -164,6 +193,7 @@ function say(index,key,data={}){
  index=Number.isInteger(Number(index))&&Number(index)>=0&&Number(index)<styles.length?Number(index):1;
  let line;
  if(key==='sellerOpen'||key==='buyerOpen')line=(key==='sellerOpen'?sellerOpen:buyerOpen)[index].replaceAll('{item}',data.item||'이 물건');
+ else if(key==='answer')line=spoken(data.detail,index);
  else if(key==='claim'||key==='uncertainClaim')line=leads[index]+spoken(data.detail,index)+(key==='uncertainClaim'?' '+hearsay[index]:'');
  else if(key==='tea')line=tea[index];
  else if(responseKeys.includes(key))line=((G.PAWN_EXTRA_GUESTS||[])[index-24]?.voice[key]||responses[styles[index]][responseKeys.indexOf(key)]).replaceAll('{price}',Math.round(data.price||0).toLocaleString('ko-KR'));

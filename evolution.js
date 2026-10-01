@@ -78,19 +78,47 @@ function qualityDirection(o){if(!o.deepResults?.['deep-grade'])return 0;const cl
 function proof(o,key){return key==='authenticity'?(o.deepResults?.['deep-auth']||(o.caseKind===2?o.deepResults?.['deep-wear']:'')||''):key==='quality'?(o.deepResults?.['deep-grade']||''):(o.deepResults?.['deep-wear']||'')}
 function approach(s){return APPROACHES[s.current.character]||'demonstrate'}
 function pitchHint(s){return APPROACH_TEXT[approach(s)]}
+const BUYER_CONDITIONS=['손상·수리 흔적','마모와 손상','좋은 상태','거의 새것','완벽한 보존'];
+const BUYER_GRADES=['낡음','평범','양질','희귀','진귀','유물','전설','신화','금기'];
+function buyerRequirements(s){
+ const purpose=s.current.purchasePurpose;if(!purpose)return '원하는 품목과 보존 상태를 확인한 뒤 검토하겠다.';
+ const condition=[
+  '손상이나 수리 흔적이 있어도 검토하겠다.',
+  '마모와 손상이 있는 물건까지는 검토하겠다. 그보다 보존 상태가 나쁜 물건은 어렵다.',
+  '좋은 보존 상태 이상이어야 한다.',
+  '거의 새것인 보존 상태 이상이어야 한다.',
+  '완벽하게 보존된 물건이어야 한다.'
+ ][purpose.minCondition]||'보존 상태를 먼저 확인하겠다.';
+ const grade=purpose.minGrade===0?'제작 등급은 따로 요구하지 않는다.':(BUYER_GRADES[purpose.minGrade]||'원하는')+' 이상 등급이어야 한다.';
+ return G.PawnCustomerGoals.brief(purpose)+' '+condition+' '+grade;
+}
+
 function pitch(s,id){
- const o=s.current,q=o.buyerQuotes[o.stockUid];o.pitchUsed=true;o.patience--;
+ const o=s.current,q=o.buyerQuotes[o.stockUid],it=H.item(o.itemId);o.pitchUsed=true;o.patience--;
  const matched=approach(s)===id;
- if(id==='story'){q.storyShown=true;H.history(o,'player',H.item(o.itemId).story)}
+ if(id==='story'){q.storyShown=true;H.history(o,'player',it.story)}
+ if(id==='demonstrate'){
+  const use=G.PawnDialogueData?.useFor(it.id),condition=BUYER_CONDITIONS[o.condition]||'보존 상태 미확인';
+  H.history(o,'player','「'+it.name+'」의 보존 상태는 「'+condition+'」입니다. '+(use?.instruction||'원래 용도는 「'+it.effect+'」로 알려져 있습니다.'));
+ }
  if(id==='assert-real'){
-  q.asserted=true;const caught=!o.genuine&&(q.detected||q.disclosed||q.assertRoll<.16+H.profile(o.character).expertise*.68);
-  if(caught){q.detected=true;const base=Math.max(3,o.value*q.taste*H.marketFactor(s,H.item(o.itemId)));q.perceivedValue=Math.round(base);q.maxBase=Math.round(base*1.08);q.price=Math.max(3,Math.round(base*.72));o.price=q.price;o.estimate=q.perceivedValue;o.mood=cap(o.mood-20,-100,100);H.changeRelation(s,-12,'근거 없는 진품 보증을 알아챔');return H.voice(s,'offended')}
+  q.asserted=true;H.history(o,'player','「'+it.name+'」에 대한 진품 보증을 제시합니다.');const caught=!o.genuine&&(q.detected||q.disclosed||q.assertRoll<.16+H.profile(o.character).expertise*.68);
+  if(caught){q.detected=true;const base=Math.max(3,o.value*q.taste*H.marketFactor(s,H.item(o.itemId)));q.perceivedValue=Math.round(base);q.maxBase=Math.round(base*1.08);q.price=Math.max(3,Math.round(base*.72));o.price=q.price;o.estimate=q.perceivedValue;o.mood=cap(o.mood-20,-100,100);H.changeRelation(s,-12,'근거 없는 진품 보증을 알아챔');return H.voice(s,'answer',{detail:'「'+it.name+'」에 관해 진품이라고 보증했지만, 내가 확인한 특징은 가품이다. 그 보증은 믿을 수 없다.'})}
  }
  if(matched){q.price=Math.max(3,Math.round(q.price*1.06));q.maxBase=Math.round(q.maxBase*1.12);o.mood=cap(o.mood+8,-100,100);H.changeRelation(s,3,'손님이 중요하게 여기는 점을 설명함')}
  else{o.mood=cap(o.mood-3,-100,100);H.changeRelation(s,-1,'손님이 원하는 설명과 어긋남')}
  o.price=q.price;
- const detail=matched?({story:'그 사연이라면 오래 간직하고 싶다. 조금 더 값을 쳐줄 수 있다.',demonstrate:'상태와 쓰임새를 직접 보니 마음이 놓인다. 이 정도면 값을 더 쳐줄 수 있다.','assert-real':'보증까지 해 준다면 믿고 살 수 있다. 그만큼 가격을 더 생각하겠다.'})[id]:pitchHint(s)+' 지금 설명은 내 결정에 큰 도움이 되지 않았다.';
- return H.voice(s,'claim',{detail});
+ const introduced={
+  story:'「'+it.name+'」에 「'+it.story.replace(/[.!?。]+$/,'')+'」라는 사연이 있다는 설명을 들었다.',
+  demonstrate:'「'+it.name+'」의 보존 상태가 「'+(BUYER_CONDITIONS[o.condition]||'미확인')+'」라는 설명을 확인했다. 원래 용도가 「'+it.effect+'」라는 점도 들었다.',
+  'assert-real':'「'+it.name+'」에 대한 진품 보증을 들었다.'
+ }[id];
+ const reaction=matched?({
+  story:'그 사연이라면 오래 간직하고 싶다. 조금 더 값을 쳐줄 수 있다.',
+  demonstrate:'보존 상태와 용도를 구분해 설명해 주니 판단하기 쉽다. 이 정도면 값을 더 쳐줄 수 있다.',
+  'assert-real':'그 보증을 근거로 구매를 검토하겠다. 그만큼 가격을 더 생각하겠다.'
+ })[id]:pitchHint(s)+' 지금 설명은 내 결정에 큰 도움이 되지 않았다.';
+ return H.voice(s,'answer',{detail:introduced+' '+reaction});
 }
 function dayBonus(s){
  const a=s.dayActivity||{trades:Math.min(8,s.dayBought||0),night:s.night?.done?.length||0};
@@ -160,5 +188,5 @@ function valid(s){
  if(o.deepResults){if(typeof o.deepResults!=='object'||Array.isArray(o.deepResults)||!o.deepLevels)return false;for(const [id,t] of Object.entries(o.deepResults))if(!DEEP.some(d=>d.id===id)||typeof t!=='string'||t.length>3000||!n(o.deepLevels[id])||o.deepLevels[id]>5)return false;}
  return true;
 }
-G.PawnEvolution={bind,prepare,decorate,cautious,deepOptions,deepInvestigate,deepReference,deepText,review,qualityDirection,proof,pitch,pitchHint,approach,dayBonus,activity,queue,bought,sold,pickReturn,specialLot,arrive,returnChoices,resolveFollowup,depart,valid,CASES};
+G.PawnEvolution={bind,prepare,decorate,cautious,deepOptions,deepInvestigate,deepReference,deepText,review,qualityDirection,proof,pitch,pitchHint,buyerRequirements,approach,dayBonus,activity,queue,bought,sold,pickReturn,specialLot,arrive,returnChoices,resolveFollowup,depart,valid,CASES};
 })(globalThis);
