@@ -1,6 +1,11 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'analytics.js'),'utf8');
+function engine(){
+ const ctx=vm.createContext({console});
+ for(const file of ['items.js','characters.js','profiles.js','appraisal-data.js','legacy-item-appraisals.js','item-appraisals.js','guest-data.js','voices.js','trade-voice.js','affinity-voice.js','origin-data.js','customer-goals.js','evolution.js','dialogue-data.js','dialogue-reply.js','discovery-data.js','discovery.js','engine.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),ctx,{filename:file});
+ return ctx.PawnEngine;
+}
 function setup({preview=false,off=false,mode='menu',bought=0,sold=0}={}){
  const handlers={},queue=[],intervals=[],scripts=[],store=new Map(off?[['midnight-pawn-analytics','off']]:[]);
  let now=0;
@@ -25,7 +30,25 @@ test('History guards, repeated views and modal navigation do not add manual page
 test('Only actual game-start signals count starts',()=>{const x=setup();x.emit('pawn:view');assert.equal(x.named('game_start').length,0);x.app.mode='play';x.emit('pawn:mode',{mode:'play'});x.emit('pawn:game-start',{entry:'new_game'});assert.equal(x.named('game_start').length,1);assert.equal(x.named('game_start')[0].params.entry_point,'new_game')});
 test('Existing saved totals do not replay transactions',()=>{const x=setup({mode:'play',bought:10,sold:8});x.change('talk');assert.equal(x.named('game_trade').length,0)});
 test('Failed deals and proposals do not count as trades',()=>{const x=setup({mode:'play'});x.change('offer',[],{ok:true,accepted:true});x.change('accept',[],{ok:false});assert.equal(x.named('game_trade').length,0);x.app.state.bought++;x.change('accept');x.change('accept',[],{ok:false});assert.equal(x.named('game_trade').length,1)});
-test('Consignment listing counts only after sale and batch settlements count each lot',()=>{const x=setup({mode:'play'});x.change('sell',['lot','display']);assert.equal(x.named('game_trade').length,0);x.app.state.sold+=2;x.change('next');assert.equal(x.named('game_trade').length,2);assert(x.named('game_trade').every(e=>e.params.sale_channel==='consignment'));x.change('next');assert.equal(x.named('game_trade').length,2)});
+test('Actual two-lot price sales count once per lot without replaying settlements or saves',()=>{
+ const E=engine(),s=E.create(61201),x=setup({mode:'play'});s.activeEvent={id:'analytics-market-quiet',day:s.day,kind:'rumor',category:'all',mult:1,gift:0};x.app.state=s;
+ for(let n=0;n<2;n++){
+  const lot={uid:'analytics-lot-'+n,itemId:'clock-01',grade:3,claimedGrade:3,condition:2,genuine:true,value:100,apparent:100,paid:80,displayAt:null,sourceCharacter:0};s.stock.push(lot);
+  const result=E.setListing(s,lot.uid,50);assert(result.ok);x.change('setListing',[lot.uid,50],result);
+ }
+ assert.equal(x.named('game_trade').length,0);
+ // A real LCG seed produces draws 0 and 0.236..., both below these listings' 0.30 chance.
+ s.seed=634785765;assert.equal((Math.imul(s.seed,1664525)+1013904223)>>>0,0);
+ const cash=s.coins,result=E.next(s);assert(result.ok);assert.equal(result.sales.length,2);assert.equal(new Set(result.sales.map(sale=>sale.uid)).size,2);assert(result.sales.every(sale=>sale.amount===50));assert.equal(s.coins,cash+100);assert.equal(s.sold,2);
+ x.change('next',[],result);const sales=x.named('game_trade');assert.equal(sales.length,2);assert(sales.every(e=>e.params.trade_kind==='sell'&&e.params.sale_channel==='price_tag'&&e.params.game_day===s.day));
+ x.change('next',[],result);assert.equal(x.named('game_trade').length,2);
+ const next=E.next(s);assert.equal(next.sales.length,0);x.change('next',[],next);assert.equal(x.named('game_trade').length,2);
+ x.app.state=E.prepare(JSON.parse(JSON.stringify(s)));x.change('talk');assert.equal(x.named('game_trade').length,2);assert(E.validate(x.app.state));
+});
+test('Immediate sales and visiting-customer trades retain separate channels',()=>{
+ const x=setup({mode:'play'});x.app.state.sold++;x.change('sell',['quick-lot','quick']);x.app.state.sold++;x.change('accept');x.app.state.bought++;x.change('accept');
+ assert.deepEqual(x.named('game_trade').map(e=>[e.params.trade_kind,e.params.sale_channel]),[['sell','quick'],['sell','customer'],['buy','customer']]);
+});
 test('Tutorial trades never inflate real game metrics',()=>{const x=setup();x.app.mode='tutorial';x.emit('pawn:mode',{mode:'tutorial'});x.app.state.bought=12;x.app.state.sold=4;x.change('accept');assert.equal(x.named('game_trade').length,0);assert.equal(x.named('tutorial_begin').length,1)});
 test('Skipping tutorial and real completion remain different',()=>{const x=setup();x.emit('pawn:tutorial',{kind:'finish',step:38,total:38,completed:0});assert.equal(x.named('tutorial_complete').length,0);assert.equal(x.named('tutorial_end')[0].params.outcome,'skipped');x.emit('pawn:tutorial',{kind:'finish',step:38,total:38,completed:38});assert.equal(x.named('tutorial_complete').length,1)});
 test('Only successful next-day actions emit progress',()=>{const x=setup({mode:'play'});x.change('nextDay',[],{ok:false});assert.equal(x.named('game_day_reached').length,0);x.app.state.day=2;x.change('nextDay');assert.equal(x.named('game_day_reached')[0].params.game_day,2)});

@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const A=window.PawnApp, ID='G-D2VLR1ZB3C', VERSION='6.11', KEY='midnight-pawn-analytics';
+  const A=window.PawnApp, ID='G-D2VLR1ZB3C', VERSION='6.12', KEY='midnight-pawn-analytics';
   if(!A)return;
   const titles={title:'시작 화면',trade:'거래하기',stock:'보관함',collection:'수집록',shop:'가게 관리',tutorial:'체험 튜토리얼'};
   const host=location.hostname.toLowerCase();
@@ -75,7 +75,7 @@
     if(mode==='play'&&result?.ok!==false){
       const buys=Math.max(0,A.state.bought-totals.bought),sales=Math.max(0,A.state.sold-totals.sold);
       for(let i=0;i<buys;i++)send('game_trade',{trade_kind:'buy',sale_channel:'customer',game_day:A.state.day});
-      const channel=action==='accept'?'customer':action==='sell'&&['quick','request','complete'].includes(args[1])?args[1]:'consignment';
+      const channel=action==='accept'?'customer':action==='sell'&&args[1]==='quick'?'quick':'price_tag';
       for(let i=0;i<sales;i++)send('game_trade',{trade_kind:'sell',sale_channel:channel,game_day:A.state.day});
       if(action==='nextDay')send('game_day_reached',{game_day:A.state.day});
     }
