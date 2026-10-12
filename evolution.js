@@ -103,7 +103,7 @@ function pitch(s,id){
  }
  if(id==='assert-real'){
   q.asserted=true;H.history(o,'player','「'+it.name+'」에 대한 진품 보증을 제시합니다.');const caught=!o.genuine&&(q.detected||q.disclosed||q.assertRoll<.16+H.profile(o.character).expertise*.68);
-  if(caught){q.detected=true;const base=Math.max(3,o.value*q.taste*H.marketFactor(s,H.item(o.itemId)));q.perceivedValue=Math.round(base);q.maxBase=Math.round(base*1.08);q.price=Math.max(3,Math.round(base*.72));o.price=q.price;o.estimate=q.perceivedValue;o.mood=cap(o.mood-20,-100,100);H.changeRelation(s,-12,'근거 없는 진품 보증을 알아챔');return H.voice(s,'answer',{detail:'「'+it.name+'」에 관해 진품이라고 보증했지만, 내가 확인한 특징은 가품이다. 그 보증은 믿을 수 없다.'})}
+  if(caught){q.detected=true;const base=H.buyerValuation(s,o,s.stock.find(l=>l.uid===o.stockUid),o.value,q.taste);q.perceivedValue=Math.round(base);q.maxBase=Math.round(base*1.08);q.price=Math.max(3,Math.round(base*.72));o.price=q.price;o.estimate=q.perceivedValue;o.mood=cap(o.mood-20,-100,100);H.changeRelation(s,-12,'근거 없는 진품 보증을 알아챔');return H.voice(s,'answer',{detail:'「'+it.name+'」에 관해 진품이라고 보증했지만, 내가 확인한 특징은 가품이다. 그 보증은 믿을 수 없다.'})}
  }
  if(matched){q.price=Math.max(3,Math.round(q.price*1.06));q.maxBase=Math.round(q.maxBase*1.12);o.mood=cap(o.mood+8,-100,100);H.changeRelation(s,3,'손님이 중요하게 여기는 점을 설명함')}
  else{o.mood=cap(o.mood-3,-100,100);H.changeRelation(s,-1,'손님이 원하는 설명과 어긋남')}
