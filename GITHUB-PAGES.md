@@ -1,6 +1,6 @@
-# v6.4 업데이트 안내
+# v6.15 업데이트 안내
 
-UPDATE-v6.4.md를 먼저 읽고 압축 안의 모든 파일을 기존 위치에 덮어쓰세요. affinity-voice.js, origin-data.js, legacy-item-appraisals.js, item-appraisals.js, trade-voice.js, night-ui.js, night.css, appraisal.css를 포함해야 합니다. 아래는 최초 게시 절차입니다.
+GitHub 웹 업로드에는 85개 파일의 JDP-v6.15-upload.zip을 사용하세요. 압축을 풀고 안의 파일들과 music 폴더를 기존 index.html과 같은 위치에 올립니다. 새 bargaining.js, bargaining-ui.js, bargaining.css를 포함해 실행 파일을 모두 교체하세요. 기존 그림·음악·글꼴도 함께 유지합니다. UPDATE-v6.15.md에서 새 흥정과 거래 복기를 확인할 수 있습니다.
 
 # GitHub에 게임 업데이트하기
 
@@ -16,7 +16,7 @@ UPDATE-v6.4.md를 먼저 읽고 압축 안의 모든 파일을 기존 위치에 
 
 ## 빠뜨리기 쉬운 파일
 
-이 배포본에는 하위 폴더가 없습니다. 다음 파일도 게임 코드와 나란히 함께 올립니다.
+music 폴더는 구조를 유지하고, 다음 파일은 게임 코드와 나란히 함께 올립니다.
 
 - `shop.webp`, `characters-0.webp` ~ `characters-2.webp`: 상점·손님 원화
 - `title.webp`: 시작 화면 원화

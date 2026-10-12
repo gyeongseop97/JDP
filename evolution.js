@@ -76,7 +76,7 @@ function deepInvestigate(s,id){
 function review(s,o){const clear={...s,upgrades:{...s.upgrades,appraisal:5}};return DEEP.map(d=>({key:d.id,title:d.title,result:d.id==='deep-grade'?G.PawnEngine.GRADES[o.grade][0]:'정밀 확인',reference:d.id==='deep-grade'?deepReference():o.evidence.axes[d.axis].reference,observation:deepText(clear,o,d.id),seen:!!o.deepResults?.[d.id]&&o.deepResults[d.id]===deepText(clear,o,d.id),explanation:'기본 흔적을 살핀 뒤 조사 작업대 '+d.level+'단계부터 확인할 수 있는 근거입니다.'}))}
 function qualityDirection(o){if(!o.deepResults?.['deep-grade'])return 0;const clear=o.deepLevels['deep-grade']>=2,low=clear?o.grade:Math.floor(o.grade/2)*2,high=clear?o.grade:Math.min(8,low+1),claimed=o.claimedGrade??o.grade;return high<claimed?-1:low>claimed?1:0}
 function proof(o,key){return key==='authenticity'?(o.deepResults?.['deep-auth']||(o.caseKind===2?o.deepResults?.['deep-wear']:'')||''):key==='quality'?(o.deepResults?.['deep-grade']||''):(o.deepResults?.['deep-wear']||'')}
-function approach(s){return APPROACHES[s.current.character]||'demonstrate'}
+function approach(s){return G.PawnBargaining?.pitch(s)||APPROACHES[s.current.character]||'demonstrate'}
 function pitchHint(s){return APPROACH_TEXT[approach(s)]}
 const BUYER_CONDITIONS=['손상·수리 흔적','마모와 손상','좋은 상태','거의 새것','완벽한 보존'];
 const BUYER_GRADES=['낡음','평범','양질','희귀','진귀','유물','전설','신화','금기'];

@@ -71,7 +71,7 @@ function startCoffee(s,i){
  prepare(s);const p=person(s,i);p.coffeeDay=s.day;p.visits=Math.min(MAX,p.visits+1);
  const opening=variant(p,'opening:'+band(relation(s,i)),data(i).opening[band(relation(s,i))]);
  s.social.active={context:'coffee',character:i,day:s.day,exchanges:0,usedTopics:[],topicId:null,phase:'topics',message:opening,history:[{speaker:'customer',text:opening}],relationDelta:0};
- return success(s);
+ G.PawnLiving?.onCoffee(s,i);return success(s);
 }
 function append(a,speaker,message,details={}){a.history.push({speaker,text:message,...details});a.message=message}
 function change(s,a,delta){
@@ -84,9 +84,10 @@ function choose(s,id,responseId){
  if(!usable(s)||!live(s,s.social?.active))return fail('지금은 함께 커피를 마시는 중이 아니에요.');
  const a=s.social.active,t=topic(a.character,id);if(!t)return fail('그 이야기는 고를 수 없어요.');
  if(responseId===undefined){
+  if(G.PawnLiving&&!G.PawnLiving.canDiscuss(s))return fail('손님이 먼저 꺼낸 이야기에 답하거나 잠시 함께 쉬어 주세요.');
   if(a.phase!=='topics'||topics(s,a.character).find(o=>o.id===id)?.locked)return fail('지금은 그 이야기를 새로 시작할 수 없어요.');
   const p=person(s,a.character),old=p.topics[id],b=band(relation(s,a.character)),key=id+':'+(relation(s,a.character)>=t.depth?'high':'low');
-  const message=(old?.response&&old.day<s.day?t.recall+' ':'')+variant(p,key,key.endsWith(':high')?t.high:t.low);
+  const message=(G.PawnLiving?.beforeTopic(s,id)||'')+(old?.response&&old.day<s.day?t.recall+' ':'')+variant(p,key,key.endsWith(':high')?t.high:t.low);
   p.topics[id]={count:Math.min(MAX,(old?.count||0)+1),day:s.day,band:b,response:null};a.usedTopics.push(id);a.exchanges++;a.topicId=id;a.phase='response';
   append(a,'player',t.label,{topicId:id});append(a,'customer',message,{topicId:id});return success(s,message,{topicId:id});
  }
@@ -103,11 +104,11 @@ function choose(s,id,responseId){
  if(!followup)p.topics[id].response=responseId;
  const relationChange=change(s,a,delta);
  if(!followup&&responseId==='ask')a.phase='followup';else{a.topicId=null;a.phase=a.exchanges===LIMIT?'done':'topics'}
- return success(s,message,{topicId:id,responseId,relationChange,completed:a.topicId===null});
+ G.PawnLiving?.afterResponse(s,id,followup?'ask':responseId,a.topicId===null);return success(s,message,{topicId:id,responseId,relationChange,completed:a.topicId===null});
 }
 function finish(s){
  if(!usable(s)||!s.social?.active)return fail('마칠 대화가 없어요.');
- const a=s.social.active,p=person(s,a.character),message=variant(p,'ending',data(a.character).ending);s.social.active=null;return{ok:true,message};
+ const a=s.social.active,p=person(s,a.character),message=variant(p,'ending',data(a.character).ending);s.social.active=null;G.PawnLiving?.finish(s);return{ok:true,message};
 }
 function casualOptions(s){
  if(!usable(s)||!tradeContext(s))return[];const i=s.current.character,p=s.social?.people?.[i];

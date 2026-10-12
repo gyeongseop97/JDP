@@ -1,0 +1,461 @@
+{
+  "version": 6,
+  "marketSalesVersion": 1,
+  "seed": 2068085245,
+  "coins": 10000,
+  "day": 1,
+  "visitor": 1,
+  "turn": 0,
+  "serial": 1,
+  "xp": 0,
+  "bought": 0,
+  "sold": 0,
+  "profit": 0,
+  "rare": 0,
+  "legend": 0,
+  "stock": [],
+  "discovered": {},
+  "met": {
+    "0": 1
+  },
+  "relationships": {
+    "0": 1
+  },
+  "customerRecords": {},
+  "ambition": "profit",
+  "album": {},
+  "albumRewards": [],
+  "friendStories": [],
+  "night": null,
+  "claimed": [],
+  "upgrades": {
+    "appraisal": 0,
+    "inspection": 0,
+    "shelves": 0,
+    "word": 0
+  },
+  "log": [
+    {
+      "day": 1,
+      "text": "오늘의 선물 +90G",
+      "type": "good"
+    },
+    {
+      "day": 1,
+      "text": "오래된 열쇠를 받았다. 오늘부터 이 가게의 주인이다.",
+      "type": "normal"
+    }
+  ],
+  "notices": [
+    "약손의 회복 처방 +90G"
+  ],
+  "current": {
+    "uid": "lot-1",
+    "itemId": "cosmic-04",
+    "character": 0,
+    "kind": "seller",
+    "grade": 2,
+    "claimedGrade": 2,
+    "condition": 4,
+    "genuine": true,
+    "sleeper": false,
+    "apparent": 666,
+    "value": 666,
+    "estimate": 779,
+    "asking": 553,
+    "price": 553,
+    "baseFloor": 442,
+    "floor": 442,
+    "paid": 0,
+    "sale": 0,
+    "attempts": 1,
+    "status": "offered",
+    "wasFirst": false,
+    "line": "발자국은 여기서 멈추겠다냥. 반갑다냥. 오늘은 달 뒷면 조약돌 하나 팔러 왔다냥.",
+    "negotiated": true,
+    "history": [
+      {
+        "speaker": "customer",
+        "text": "발자국은 여기서 멈추겠다냥. 반갑다냥. 오늘은 달 뒷면 조약돌 하나 팔러 왔다냥."
+      },
+      {
+        "speaker": "player",
+        "text": "돋보기 · 조약돌의 어두운 면"
+      },
+      {
+        "speaker": "note",
+        "text": "조약돌의 어두운 면의 윤곽은 보인다. 색 변화와 빛의 반사 양상은 확대만으로 확인되지 않는다."
+      },
+      {
+        "speaker": "player",
+        "text": "553G를 제안합니다."
+      },
+      {
+        "speaker": "note",
+        "text": "친밀도 +1 · 제안을 받아들임"
+      },
+      {
+        "speaker": "customer",
+        "text": "말을 맞추고 셈하자냥. 553G, 받겠다냥. 그 값으로 거래하자냥."
+      },
+      {
+        "speaker": "note",
+        "text": "금액에 합의했습니다. 확정 버튼을 눌러 거래하세요. · 남은 가격 제안 1/2회"
+      }
+    ],
+    "notes": [
+      "조약돌의 어두운 면의 윤곽은 보인다. 색 변화와 빛의 반사 양상은 확대만으로 확인되지 않는다."
+    ],
+    "talkLeft": 2,
+    "patience": 4,
+    "mood": 0,
+    "relationDelta": 1,
+    "talked": [],
+    "physicalUsed": true,
+    "suspicion": 0,
+    "acceptedOffer": true,
+    "offerRelationApplied": true,
+    "lastOffer": 553,
+    "leverage": 0,
+    "checks": [
+      "lens-mark"
+    ],
+    "clues": {},
+    "lastCheck": null,
+    "verdict": "",
+    "feedback": "말을 맞추고 셈하자냥. 553G, 받겠다냥. 그 값으로 거래하자냥.",
+    "intentionRoll": 0.30796668445691466,
+    "intent": "honest",
+    "evidence": {
+      "physical": 0.48151361872442067,
+      "axes": {
+        "authenticity": {
+          "key": "authenticity",
+          "tool": "light",
+          "site": "mark",
+          "reference": "진품의 특징\n어디서 비춰도 돌의 한쪽 면만 어둡다. 빛이 반사되지 않는다.\n\n흔한 가품의 특징\n검게 칠한 면도 비스듬히 비추면 하얗게 반짝인다.\n\n겉면의 특징만 옮긴 복제도 있습니다. 돋보기로 안쪽을 교차 확인하세요. 원래 재료의 안쪽에는 표면과 이어지는 오래된 층이 남습니다. 겉만 모방하면 층의 경계가 끊깁니다. 원래 부품끼리는 연결 무늬가 이어지며 다른 물건의 부품은 어긋납니다.",
+          "claim": "어디서 비춰도 돌의 한쪽 면만 어둡다. 빛이 반사되지 않는다.",
+          "actual": 1,
+          "claimed": 1,
+          "full": "어디서 비춰도 돌의 한쪽 면만 어둡다. 빛이 반사되지 않는다.",
+          "unclear": "조약돌의 어두운 면 부분이 닳거나 가려졌다. 지금은 제대로 보이지 않는다.",
+          "requiredLevel": 0,
+          "observedActual": false
+        },
+        "quality": {
+          "key": "quality",
+          "tool": "lens",
+          "site": "material",
+          "reference": "조약돌의 고른 표면에서 솜씨를 살펴본다.\n\n거친 마감: 새긴 홈의 깊이가 제각각이다. 끝에 부서진 돌가루가 남았다.\n보통 마감: 넓은 면은 고르게 깎였다. 가는 선 끝에는 돌가루가 조금 남았다.\n정교한 마감: 가는 선까지 고르게 새겼다. 돌가루도 깨끗이 털어 냈다.\n\n잘 만들었다고 꼭 진품은 아니다.",
+          "claim": "조약돌의 고른 표면: 넓은 면은 고르게 깎였다. 가는 선 끝에는 돌가루가 조금 남았다.",
+          "actual": 1,
+          "claimed": 1,
+          "full": "조약돌의 고른 표면: 넓은 면은 고르게 깎였다. 가는 선 끝에는 돌가루가 조금 남았다.",
+          "unclear": "",
+          "requiredLevel": 0,
+          "observedActual": false
+        },
+        "condition": {
+          "key": "condition",
+          "tool": "lens",
+          "site": "wear",
+          "reference": "돌의 바깥 테두리에서 오래 쓰거나 고친 흔적을 살펴본다.\n\n손상·수리 흔적: 깨진 곳을 메웠다. 그 옆으로 다시 금이 갔다.\n가벼운 사용 흔적: 표면에 얕은 자국만 있다. 속까지 갈라지지는 않았다.\n깨끗한 상태: 깨지거나 긁힌 곳 없이 깨끗하다.",
+          "claim": "돌의 바깥 테두리: 깨지거나 긁힌 곳 없이 깨끗하다.",
+          "actual": 2,
+          "claimed": 2,
+          "full": "돌의 바깥 테두리: 깨지거나 긁힌 곳 없이 깨끗하다.",
+          "unclear": "",
+          "requiredLevel": 0,
+          "observedActual": false
+        }
+      }
+    },
+    "rewarded": {},
+    "appraisalEdition": 61,
+    "investigationVersion": 2,
+    "inspectionLeft": 1,
+    "inspected": [
+      "lens-mark"
+    ],
+    "inspectionResults": {
+      "lens-mark": "조약돌의 어두운 면의 윤곽은 보인다. 색 변화와 빛의 반사 양상은 확대만으로 확인되지 않는다."
+    },
+    "inspectionLevels": {
+      "lens-mark": 0
+    },
+    "investigations": {
+      "lens-mark": "조약돌의 어두운 면의 윤곽은 보인다. 색 변화와 빛의 반사 양상은 확대만으로 확인되지 않는다.",
+      "lens-material": "조약돌의 고른 표면: 넓은 면은 고르게 깎였다. 가는 선 끝에는 돌가루가 조금 남았다.",
+      "lens-wear": "돌의 바깥 테두리: 깨지거나 긁힌 곳 없이 깨끗하다.",
+      "light-mark": "어디서 비춰도 돌의 한쪽 면만 어둡다. 빛이 반사되지 않는다.",
+      "light-material": "조약돌의 고른 표면에 밝은 부분과 그림자가 생긴다. 작은 홈이나 미세한 선까지는 맨눈으로 읽히지 않는다.",
+      "light-wear": "돌의 바깥 테두리에 밝은 부분과 그림자가 생긴다. 작은 홈이나 미세한 선까지는 맨눈으로 읽히지 않는다."
+    },
+    "lastInspection": "lens-mark",
+    "caseEdition": 65,
+    "caseKind": 0,
+    "deepResults": {},
+    "deepLevels": {},
+    "pitchUsed": false,
+    "discovery": {
+      "version": 1,
+      "itemId": "cosmic-04",
+      "clues": [
+        {
+          "id": "authenticity-0",
+          "topic": "authenticity",
+          "axis": "authenticity",
+          "claim": "어디서 비춰도 돌의 한쪽 면만 어둡다.",
+          "full": "어디서 비춰도 돌의 한쪽 면만 어둡다.",
+          "tool": "light",
+          "site": "mark",
+          "inspection": "light-mark",
+          "siteLabel": "조약돌의 어두운 면",
+          "heard": false,
+          "observed": false
+        },
+        {
+          "id": "authenticity-1",
+          "topic": "authenticity",
+          "axis": "authenticity",
+          "claim": "빛이 반사되지 않는다.",
+          "full": "빛이 반사되지 않는다.",
+          "tool": "light",
+          "site": "mark",
+          "inspection": "light-mark",
+          "siteLabel": "조약돌의 어두운 면 · 다른 면",
+          "heard": false,
+          "observed": false
+        },
+        {
+          "id": "quality-0",
+          "topic": "quality",
+          "axis": "quality",
+          "claim": "조약돌의 고른 표면: 넓은 면은 고르게 깎였다.",
+          "full": "조약돌의 고른 표면: 넓은 면은 고르게 깎였다.",
+          "tool": "lens",
+          "site": "material",
+          "inspection": "lens-material",
+          "siteLabel": "조약돌의 고른 표면",
+          "heard": false,
+          "observed": false
+        },
+        {
+          "id": "quality-1",
+          "topic": "quality",
+          "axis": "quality",
+          "claim": "조약돌의 고른 표면: 가는 선 끝에는 돌가루가 조금 남았다.",
+          "full": "조약돌의 고른 표면: 가는 선 끝에는 돌가루가 조금 남았다.",
+          "tool": "lens",
+          "site": "material",
+          "inspection": "lens-material",
+          "siteLabel": "조약돌의 고른 표면 · 다른 면",
+          "heard": false,
+          "observed": false
+        },
+        {
+          "id": "condition-0",
+          "topic": "condition",
+          "axis": "condition",
+          "claim": "돌의 바깥 테두리: 깨지거나 긁힌 곳 없이 깨끗하다.",
+          "full": "돌의 바깥 테두리: 깨지거나 긁힌 곳 없이 깨끗하다.",
+          "tool": "lens",
+          "site": "wear",
+          "inspection": "lens-wear",
+          "siteLabel": "돌의 바깥 테두리",
+          "heard": false,
+          "observed": false
+        },
+        {
+          "id": "condition-extra",
+          "topic": "condition",
+          "axis": "condition",
+          "claim": "가는 틈에 메운 재료가 끼어 있지 않다.",
+          "full": "가는 틈에 메운 재료가 끼어 있지 않다.",
+          "siteLabel": "돌의 바깥 테두리",
+          "tool": "lens",
+          "site": "wear",
+          "adverse": false,
+          "inspection": "detail-condition-extra",
+          "heard": false,
+          "observed": false
+        },
+        {
+          "id": "function-main",
+          "topic": "function",
+          "axis": "condition",
+          "claim": "이 물건에는 별도로 작동시킬 기계 부품이 없다.",
+          "full": "이 물건에는 별도로 작동시킬 기계 부품이 없다.",
+          "siteLabel": "달 뒷면 조약돌의 사용 방식",
+          "tool": "lens",
+          "site": "material",
+          "adverse": false,
+          "reportedProblem": null,
+          "inspection": "detail-function-main",
+          "heard": false,
+          "observed": false
+        }
+      ]
+    },
+    "dialogue": {
+      "version": 1,
+      "itemId": "cosmic-04",
+      "answered": {
+        "authenticity": false,
+        "quality": false,
+        "condition": false,
+        "function": false,
+        "use": false,
+        "admittedReplica": false
+      },
+      "answers": {
+        "authenticity": [],
+        "quality": [],
+        "condition": [],
+        "function": [],
+        "use": []
+      }
+    },
+    "questionSpent": 0,
+    "questionMax": 2,
+    "inspectionMax": 2,
+    "inspectionSpent": 1,
+    "judgment": {
+      "authenticity": null,
+      "quality": null,
+      "condition": null
+    },
+    "evidenceUsed": {},
+    "lastImpact": {
+      "key": "offer",
+      "kind": "offer",
+      "before": 553,
+      "after": 553,
+      "relationDelta": 1,
+      "reason": "금액에 합의했습니다. 확정 버튼을 눌러 거래하세요.",
+      "offerCost": 1,
+      "offersLeft": 1
+    },
+    "loopVersion": 2,
+    "offerVersion": 1,
+    "offerSpent": 1,
+    "offerPenalty": 0,
+    "offerWarnings": 0,
+    "offerMax": 2,
+    "offerLeft": 1,
+    "origin": {
+      "itemId": "cosmic-04",
+      "year": 1951,
+      "story": "달의 앞면 관광을 거절한 탐험가가 조용한 뒷골목에서 주워 왔다.",
+      "claim": "1951년에 오래된 경매장에서 샀다. 달의 앞면 관광을 거절한 탐험가가 조용한 뒷골목에서 주워 왔다고 들었다.",
+      "used": false,
+      "trust": "unknown"
+    }
+  },
+  "closing": false,
+  "dayStart": 650,
+  "dayBought": 0,
+  "dayProfit": 0,
+  "eventDone": true,
+  "aidDay": 0,
+  "sound": true,
+  "activeEvent": {
+    "id": "e16",
+    "title": "약손의 회복 처방",
+    "description": "약손이 가게 주인에게 휴식을 처방합니다. 미리 맡겨 두었다며 회복 지원금 90G를 건넵니다.",
+    "kind": "gift",
+    "category": "all",
+    "mult": 1.15,
+    "gift": 90,
+    "character": 15,
+    "requestText": "복용법은 간단합니다. 따뜻한 식사 한 번, 깊은 숨 세 번.",
+    "resolveText": "봉투 뒤에 ‘장사는 내일도 할 수 있습니다’라고 적혀 있습니다.",
+    "day": 1
+  },
+  "lastEventId": "e16",
+  "lastCharacter": 0,
+  "lastItemId": "cosmic-04",
+  "planning": {
+    "version": 1,
+    "seed": 3234220136,
+    "lastDay": 1,
+    "researchDay": 0,
+    "forecasts": [
+      {
+        "id": "forecast:0",
+        "category": "potion",
+        "startDay": 2,
+        "endDay": 3,
+        "mult": 1.15,
+        "title": "물약 수집 장터",
+        "detail": "2~3일에 물약 수요가 늘어 시장 가격이 15% 높아집니다.",
+        "researched": false
+      },
+      {
+        "id": "forecast:1",
+        "category": "mask",
+        "startDay": 6,
+        "endDay": 7,
+        "mult": 1.3,
+        "title": "가면 수집 장터",
+        "detail": "6~7일에 가면 수요가 늘어 시장 가격이 30% 높아집니다.",
+        "researched": false
+      }
+    ],
+    "orders": [
+      {
+        "id": "order:1:0",
+        "character": 0,
+        "category": "clock",
+        "itemId": null,
+        "minCondition": 2,
+        "genuine": true,
+        "dueDay": 4,
+        "price": 384,
+        "offeredDay": 1,
+        "offerUntil": 1,
+        "status": "offered",
+        "acceptedDay": null,
+        "lotUid": null,
+        "completedDay": null,
+        "result": null
+      },
+      {
+        "id": "order:1:1",
+        "character": 0,
+        "category": "jewelry",
+        "itemId": null,
+        "minCondition": 2,
+        "genuine": true,
+        "dueDay": 3,
+        "price": 401,
+        "offeredDay": 1,
+        "offerUntil": 1,
+        "status": "offered",
+        "acceptedDay": null,
+        "lotUid": null,
+        "completedDay": null,
+        "result": null
+      }
+    ]
+  },
+  "adventures": {
+    "version": 1,
+    "lastDay": 1,
+    "auctionWeek": -1,
+    "arcs": {},
+    "auction": null
+  },
+  "social": {
+    "version": 1,
+    "people": {},
+    "active": null
+  },
+  "evolution": 65,
+  "followups": [],
+  "memories": [],
+  "dayActivity": {
+    "trades": 0,
+    "night": 0
+  }
+}
