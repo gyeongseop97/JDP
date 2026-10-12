@@ -1,0 +1,9 @@
+(function(G){'use strict';
+const cache=new Map(),columns={happy:0,thoughtful:1,troubled:2,coffee:3},labels={neutral:'기본 모습',happy:'반가운 표정',thoughtful:'생각하는 모습',troubled:'지친 표정',coffee:'커피를 감싼 모습'};
+function image(src){if(!cache.has(src)){const img=new Image();img.decoding='async';img.onload=()=>G.PawnApp?.paintPeople?.();img.onerror=()=>{img.failed=true};img.src=src;cache.set(src,img)}return cache.get(src)}
+function paint(canvas,s){const index=Number(canvas.dataset.person),context=canvas.dataset.portraitContext||(canvas.id==='character'?'scene':'catalogue'),pose=canvas.dataset.previewPose||G.PawnLiving?.pose(s,index,context)||'neutral';canvas.dataset.pose=pose;if(canvas.id==='character')canvas.setAttribute('aria-label',(G.PAWN_CHARACTERS[index]?.name||'손님')+' · '+labels[pose]);canvas.dataset.portraitReady='false';if(pose==='neutral'||columns[pose]===undefined)return false;
+ const group=Math.floor(index/4),row=index%4,img=image('portraits-'+group+'.png');if(!img.complete||!img.naturalWidth||img.failed)return false;
+ const column=columns[pose],rows=group===6?2:4,rect=G.PawnPortraitBounds?.[group]?.[row]?.[column]||[column*img.naturalWidth/4,row*img.naturalHeight/rows,(column+1)*img.naturalWidth/4,(row+1)*img.naturalHeight/rows],x=rect[0],y=rect[1],w=rect[2]-x,h=rect[3]-y;
+ const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,canvas.width,canvas.height);const scale=Math.min(canvas.width/w,canvas.height/h),dw=w*scale,dh=h*scale,dx=(canvas.width-dw)/2,dy=canvas.height-dh;ctx.save();const clips=G.PawnPortraitClips?.[group]?.[row]?.[column];if(clips){ctx.beginPath();for(const polygon of clips){polygon.forEach(([px,py],i)=>ctx[i?'lineTo':'moveTo'](dx+(px-x)*scale,dy+(py-y)*scale));ctx.closePath()}ctx.clip()}ctx.drawImage(img,x,y,w,h,dx,dy,dw,dh);ctx.restore();canvas.dataset.portraitReady='true';canvas.dataset.portraitAtlas='portraits-'+group+'.png';return true}
+G.PawnPortraits={paint,labels};
+})(globalThis);
