@@ -128,12 +128,12 @@ test('All item introductions name the actual item and preserve the existing pric
  }assert.equal(replies,144*26*3);console.log('Buyer item introductions checked: '+replies);
 });
 
-test('Introduction copy leaves successful checkout and caught false-assurance amounts unchanged',()=>{
+test('Checkout stays exact and caught false assurance retains the requested-item premium',()=>{
  for(const topic of ['story','demonstrate','assert-real']){
   const s=buyerFixture('clock-01',0),o=s.current;reply(s,topic);const before=s.coins,price=o.price,relation=E.relationship(s,0);assert(E.accept(s).ok);assert.equal(s.coins,before+price);assert.equal(o.sale,price);assert.equal(s.profit,price-200);assert.equal(E.relationship(s,0),relation+6);assert.equal(s.stock.length,0);unchanged(s,()=>E.accept(s));assert(E.validate(s));
  }
- const s=buyerFixture('clock-01',0,0,0,{genuine:false}),o=s.current,q=o.buyerQuotes[o.stockUid];q.assertRoll=0;const before=s.coins,answer=reply(s,'assert-real');assert.match(answer.text,/가품/);assert(q.detected);assert.equal(o.price,288);assert.equal(q.maxBase,432);assert.equal(q.perceivedValue,400);assert.equal(E.relationship(s,0),48);assert.equal(o.mood,-20);assert.equal(o.patience,5);assert.equal(o.questionSpent,0);assert.equal(o.offerSpent,0);assert.equal(s.coins,before);
- assert(E.accept(s).ok);assert.equal(s.coins,before+288);assert.equal(s.profit,88);assert.equal(E.relationship(s,0),52);assert(E.validate(s));
+ const s=buyerFixture('clock-01',0,0,0,{genuine:false}),o=s.current,q=o.buyerQuotes[o.stockUid];q.assertRoll=0;const before=s.coins,answer=reply(s,'assert-real');assert.match(answer.text,/가품/);assert(q.detected);assert.equal(o.price,328);assert.equal(q.maxBase,492);assert.equal(q.perceivedValue,456);assert.equal(E.relationship(s,0),48);assert.equal(o.mood,-20);assert.equal(o.patience,5);assert.equal(o.questionSpent,0);assert.equal(o.offerSpent,0);assert.equal(s.coins,before);
+ assert(E.accept(s).ok);assert.equal(s.coins,before+328);assert.equal(s.profit,128);assert.equal(E.relationship(s,0),52);assert(E.validate(s));
 });
 
 test('Preference replies refuse stock that fails the stated purpose, condition, grade or personal taste',()=>{

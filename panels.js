@@ -24,14 +24,14 @@
     const list=s.stock.filter(x=>A.stockFilter==='all'||(A.stockFilter==='display'?x.displayAt!==null:x.displayAt===null));
     $('stock-grid').innerHTML=list.length?list.map(lot=>{
       const it=E.item(lot.itemId),quick=E.quote(s,lot,'quick'),listed=lot.displayAt!==null,price=listed?lot.displayPrice:null;
-      const negotiating=s.current?.kind==='buyer'&&s.current.status==='offered'&&s.current.stockUid===lot.uid;
+      const held=!!lot.orderId;const negotiating=held||s.current?.kind==='buyer'&&s.current.status==='offered'&&s.current.stockUid===lot.uid;
       const uid=esc(lot.uid),inputId=esc('listing-price-'+lot.uid),profitId=esc('listing-profit-'+lot.uid),errorId=esc('listing-error-'+lot.uid);
-      const status=listed?'가격표 '+fmt(price)+'G · 판매 시점 미정':'가격표 없음 · 방문 손님과 흥정만';
+      const status=held?'예약 보관 중 · 다른 손님에게 판매되지 않아요':listed?'가격표 '+fmt(price)+'G · 판매 시점 미정':'가격표 없음 · 방문 손님과 흥정만';
       return '<article class="stock-card" data-stock-uid="'+uid+'"><div class="stock-card-top">'+art(lot.itemId,lot.grade)+'<div><h3>'+esc(it.name)+'</h3>'+badge(lot.grade)+(lot.genuine?' <span class="auth-tag">진품</span>':' <span class="fake-tag">가품</span>')+'</div></div>'+
         (lot.genuine&&!s.album[lot.itemId]?'<p class="album-eligible">✦ 밤에 도록 등록 가능 · 등록 전에 팔면 기회를 놓쳐요</p>':'')+
         '<div class="stock-meta"><span>매입원가 · 손질비 포함 <b>'+fmt(lot.paid)+'G</b></span><span>물건의 가치 <b>'+fmt(lot.value)+'G</b></span></div>'+
         '<div class="listing-status '+(listed?'listed':'')+'">'+status+'</div>'+
-        (negotiating?'<p class="stock-negotiation-status">지금 방문 손님과 흥정 중이에요. 거래를 마친 뒤 가격표를 바꿀 수 있습니다.</p>':'')+
+        (negotiating?'<p class="stock-negotiation-status">'+(held?'예약이나 단골 이야기에서 보관을 해제하면 다시 판매할 수 있습니다.':'지금 방문 손님과 흥정 중이에요. 거래를 마친 뒤 가격표를 바꿀 수 있습니다.')+'</p>':'')+
         '<form class="listing-form" data-listing-form="'+uid+'" data-paid="'+lot.paid+'" novalidate><label for="'+inputId+'">진열 정가</label><div class="listing-input-row"><div class="gold-input"><input id="'+inputId+'" name="listingPrice" type="text" inputmode="numeric" maxlength="13" autocomplete="off" value="'+(listed?fmt(price):'')+'" placeholder="가격표 없음" aria-describedby="'+profitId+' '+errorId+'"'+(negotiating?' disabled':'')+'><span>G</span></div><button type="submit" class="btn secondary" data-action="list-stock" data-uid="'+uid+'"'+(negotiating?' disabled':'')+'>'+(listed?'가격 변경':'가격표 달기')+'</button></div>'+
         '<p class="listing-profit'+(listed&&price<lot.paid?' loss':'')+'" id="'+profitId+'" data-listing-profit aria-live="polite">'+(listed?profitLabel(price,lot.paid,'판매 시 예상'):'정가를 입력하면 예상 손익을 확인할 수 있어요.')+'</p><p class="listing-error" id="'+errorId+'" data-listing-error role="alert"></p>'+
         (listed?'<button type="button" class="listing-remove" data-action="unlist-stock" data-uid="'+uid+'"'+(negotiating?' disabled':'')+'>가격표 내리기</button>':'')+'</form>'+
